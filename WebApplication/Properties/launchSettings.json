@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "forge-configurator-inventor": {
+    "aps-configurator-inventor": {
       "commandName": "Project",
       "commandLineArgs": "poc=true",
       "launchBrowser": true,

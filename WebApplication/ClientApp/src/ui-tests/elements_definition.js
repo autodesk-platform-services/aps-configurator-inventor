@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -27,7 +27,7 @@ module.exports = {
      xpButtonReset : locate('button').find('span').withText('Reset'),
      xpButtonUpdate : locate('button').find('span').withText('Update'),
      xpButtonOk: locate('button').find('span').withText('Ok'),
-     ForgeViewer : '#ForgeViewer',
+     AutodeskViewer : '#AutodeskViewer',
      xpLinkAdskForge : '//a[@href="https://forge.autodesk.com"]',
      xpComboProjects : '//div[@role="button"] //*[local-name()="svg"]',
      xpProjectWrench : '//li[contains(@role,"menuitem") and .//span[text()="Wrench"]]',
@@ -40,7 +40,7 @@ module.exports = {
      BomContainer : '.bomContainer',
      DrawingContainer : '.drawingContainer',
      xpPopUpLog : '//div[contains(h3, "Navigation Action")]',
-     xpViewerCanvas : '//*[@id="ForgeViewer"] //canvas',
+     xpViewerCanvas : '//*[@id="AutodeskViewer"] //canvas',
      projectsTab : locate('li').find('p').withText('Projects'),
      modelTab : locate('li').find('p').withText('Model'),
      bomTab : locate('li').find('p').withText('BOM'),

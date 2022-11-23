@@ -1,6 +1,6 @@
 ﻿/////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -56,7 +56,7 @@ namespace WebApplication.Job
                 Logger.LogInformation($"Replacement charcters found in project name or top level assembly name for job {Id}.");
 
                 throw new ProcessingException("Project name or assembly contains unsupported characters", 
-                    new[] { "Please refer to https://github.com/Autodesk-Forge/forge-configurator-inventor/blob/master/README.md#project-file-zip-encoding" });
+                    new[] { "Please refer to https://github.com/autodesk-platform-services/aps-configurator-inventor/blob/master/README.md#project-file-zip-encoding" });
             }
 
             // upload the file to OSS

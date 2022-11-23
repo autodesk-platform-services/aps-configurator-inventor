@@ -1,6 +1,6 @@
 {
-  "short_name": "forge-configurator-inventor",
-  "name": "forge-configurator-inventor",
+  "short_name": "aps-configurator-inventor",
+  "name": "aps-configurator-inventor",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -68,12 +68,9 @@ export class Toolbar extends Component {
       <div>
         <TopNav
           logo={
-            <Logo link="https://forge.autodesk.com" label="Autodesk HIG">
+            <Logo link="https://aps.autodesk.com" label="Autodesk HIG">
               <PlaceCenterContainer>
-                <img src={"logo.png"} alt="" />
-                <LogoText>
-                    <Typography style={{ fontSize: '16px'}}>AUTODESK<sup>®</sup> <strong>FORGE</strong></Typography>
-                </LogoText>
+                <img src={"logo.png"} alt="" style={{ height: '32px' }}/>
               </PlaceCenterContainer>
             </Logo>
           }

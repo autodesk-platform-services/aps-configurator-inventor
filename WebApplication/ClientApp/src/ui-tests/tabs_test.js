@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -53,7 +53,7 @@ Scenario('should check if all Tabs are loaded after click', async ({ I }) => {
 
     // check that Model tab has correct content
     I.waitForVisible( locators.ParametersContainer, 240);
-    I.seeElement( locators.ForgeViewer);
+    I.seeElement( locators.AutodeskViewer);
 
     // click on BOM tab
     I.click( locators.bomTab);

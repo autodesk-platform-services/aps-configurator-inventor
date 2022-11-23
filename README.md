@@ -1,4 +1,4 @@
-# Forge Configurator Inventor
+# Configurator Inventor
 Demo application showcasing Configuration with Design Automation for Inventor
 
 ![thumbnail](/img/thumbnail.gif)
@@ -24,12 +24,12 @@ Demo application showcasing Configuration with Design Automation for Inventor
 
 ## Run sample for the first time
 1. Clone repository
-1. Create a forge app at https://forge.autodesk.com/, and select `Design Automation API` and `Data Management API` in the **APIs** section
+1. Create an APS app at https://aps.autodesk.com/, and select `Design Automation API` and `Data Management API` in the **APIs** section
 ![thumbnail](/img/APIs.png)
 1. Enter https://localhost:5001 as the callback URL
 1. Note the `Client ID` and `Client Secret` generated
-1. Specify **Forge credentials** using **one** of the following approaches:\
-    **a)** Set environment variables `FORGE_CLIENT_ID` and `FORGE_CLIENT_SECRET`\
+1. Specify **APS credentials** using **one** of the following approaches:\
+    **a)** Set environment variables `APS_CLIENT_ID` and `APS_CLIENT_SECRET`\
     **b)** Set environment variables `Forge__ClientId` and `Forge__ClientSecret`\
     **c)** Make a copy of `appsettings.Local.template.json` in the `WebApplication` directory named `appsettings.Local.json` and replace the `<clientId>` and `<clientSecret>` in it\
     **d)** (not on dev machine) Modify `appsettings.json` (or `appsettings.<ENVIRONMENT>.json`) with the template mentioned in **c)**\
@@ -41,7 +41,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
    Change `"CompletionCheck"` value from `"Polling"` to `"Callback"` and set `"CallbackUrlBase"` url to your server URL or ngrok tunnel URL for a locally run application.
    To run and debug callbacks locally please refer to the [ngrok section](#Use-ngrok-for-localhost-callbacks)
 1. *(Optional) Specify if access should be limited in `WebApplication\appsettings.json`. Set `Enabled` to `true` or `false`, and populate the `Domains` and `Addresses` fields with comma delimited lists such as `["autodesk.com", "company.com"]` and `["person@company2.com", "person@company3.com"]`*
-1. Open the `forge-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
+1. Open the `aps-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
 ![thumbnail](/img/BuildSolution.png)\
 This will also generate the **zip** files of all the **app bundles** that the **web app** will need to upload to the **Design Automation** server\
 ![thumbnail](/img/AppBundleZips.png)\
@@ -51,7 +51,7 @@ Now we have to initialize things both on the **Design Automation** server and lo
 ![thumbnail](/img/DotnetRunInitialize.png)\
 Once the output reaches the `Now listening on: https://localhost:5001` line just open that **URL** in your browser\
 **Next time** you'll also be able to start the app from the **Visual Studio** debugger. 
-In the **Debug** drop-down menu select `forge-configurator-inventor` and start debugging
+In the **Debug** drop-down menu select `aps-configurator-inventor` and start debugging
 ![thumbnail](/img/DebugApp.png)
 This time your browser should open up **automatically** showing the correct **URL** 
 
@@ -60,7 +60,7 @@ This time your browser should open up **automatically** showing the correct **UR
 * Building the projects also installs required packages (this can take several minutes).
 
 ### Web Application and App Bundles
-* Open the `forge-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
+* Open the `aps-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
 
 ### Web Application Alone
 * From a command prompt, go to the `WebApplication` directory, and run `dotnet build`.
@@ -92,7 +92,7 @@ This time your browser should open up **automatically** showing the correct **UR
 
 ## Run/Debug Tests
 ### Backend
-* Note that running the tests clears initialization data, so you will either need to change forge credentials before running them, or run the initializer again afterward. See [Clear and load initial data...](#clear-and-load-initial-data-during-app-launch-time)
+* Note that running the tests clears initialization data, so you will either need to change APS credentials before running them, or run the initializer again afterward. See [Clear and load initial data...](#clear-and-load-initial-data-during-app-launch-time)
 1. From Visual Studio 2019
     * Open Test Explorer and select tests to run or debug
 1. From Visual Studio Code
@@ -114,24 +114,24 @@ This time your browser should open up **automatically** showing the correct **UR
     * For particular file you can use this command: `npx codeceptjs run src/ui-tests/<test file name>`
 
 ## Backend
-We are using the forge service on the backend https://forge.autodesk.com/
+We are using the APS service on the backend https://aps.autodesk.com/
 
 ### .NET Core
 We are using the latest version of .NET Core (3.1 at the time of writing) https://dotnet.microsoft.com/download/dotnet-core/3.1
 
 The project was initally created using the command `dotnet new react`
 
-### Forge Design Automation
-https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/overview/
+### Design Automation
+https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/overview/
 
 C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-design.automation
 
 We are using the Inventor and Revit engines.
 
 ### OSS
-Used for storing your designs. For communication with Forge Design Automation
+Used for storing your designs. For communication with Design Automation
 
-https://forge.autodesk.com/en/docs/data/v2/developers_guide/overview/
+https://aps.autodesk.com/en/docs/data/v2/developers_guide/overview/
 
 C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-client
 
@@ -178,8 +178,8 @@ We are using npm.
 * For an advanced example of CI/CD on AWS, see [AWS-CICD](AWS-CICD/README.md)
 * For a simple method of deploying to Azure, see [Publish a Web app to Azure App Service using Visual Studio](https://docs.microsoft.com/en-us/visualstudio/deployment/quickstart-deploy-to-azure?view=vs-2019)
     * First change `WebApplication.Program.cs` by removing the `UseKestrel()` statement
-    * You will need to change the callback in your forge app to match the URL you deploy to.
-* Example of the real-life deploy of an **FDA** as an [App Service](https://github.com/Autodesk-Forge/forge-configurator-inventor/wiki/AppServiceDeploy)
+    * You will need to change the callback in your APS app to match the URL you deploy to.
+* Example of the real-life deploy of a **Design Automation** as an [App Service](https://github.com/Autodesk-Forge/forge-configurator-inventor/wiki/AppServiceDeploy)
 	
 ### Project file zip encoding
 * Uploading your project file can cause the error "Project name or assembly contains unsupported characters". This problem typically happens when you use non Latin characters in your project file names and the zip file does not use UTF-8 encoding for the project file names.
@@ -192,7 +192,7 @@ We are using npm.
 	* Press ok
 	* Name your resulting zip file
 	
-* For more information on this issue please refer to the [FDA troubleshooting page](https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
+* For more information on this issue please refer to the [FDA troubleshooting page](https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
 
 ### Use ngrok for localhost callbacks
 * If you choose webhook callback network configuration for the application, you will need a way for the callbacks to get from the FDA servers to your local machine.

@@ -11,6 +11,6 @@ The application is available using this link: https://inventor-config-demo.autod
 
 Non authenticated anonymous users can work with two predefined projects: Wheel and Wrench. 
 
-The ability to upload custom projects is only for invited customers. Once you get the invitation, you need to authenticate using your Autodesk Forge account. To sign up for the Forge account, follow the instructions at https://forge.autodesk.com/.
+The ability to upload custom projects is only for invited customers. Once you get the invitation, you need to authenticate using your Autodesk APS account. To sign up for the APS account, follow the instructions at https://aps.autodesk.com/.
 
-Every operation (i.e. model update after change of parameters, drawing creation) is computed in the cloud. For this purpose, Cloud Credits are required. Free Cloud Credits are provided to try Forge after signing up. For more information about pricing, please see https://forge.autodesk.com/pricing.
+Every operation (i.e. model update after change of parameters, drawing creation) is computed in the cloud. For this purpose, Cloud Credits are required. Free Cloud Credits are provided to try APS after signing up. For more information about pricing, please see https://aps.autodesk.com/pricing.

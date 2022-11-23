@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -51,7 +51,7 @@ export class UserDetails extends Component {
                             onClick={this.handleAuthClick}
                         />
                 <span className="hyperlink">
-                    <a href="https://github.com/Developer-Autodesk/forge-configurator-inventor/blob/master/about.md">About application</a>
+                    <a href="https://github.com/autodesk-platform-services/aps-configurator-inventor/blob/master/about.md">About application</a>
                 </span>
             </div>
         );

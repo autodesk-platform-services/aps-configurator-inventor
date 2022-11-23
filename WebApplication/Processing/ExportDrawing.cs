@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -29,7 +29,7 @@ namespace WebApplication.Processing
     {
         private const string DrawingParameter = "DrawingParameter";
         public override string Id => nameof(ExportDrawing);
-        public override string Description => "Find the drawing of Inventor document and generate viewables for ForgeViewer";
+        public override string Description => "Find the drawing of Inventor document and generate viewables for Autodesk Viewer";
 
         protected internal override ForgeRegistration Registration { get; } = ForgeRegistration.All;
 

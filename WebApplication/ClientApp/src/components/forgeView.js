@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -113,7 +113,7 @@ export class ForgeView extends Component {
         return (
             <div className="modelContainer fullheight">
                 <Message/>
-                <div className="viewer" id="ForgeViewer">
+                <div className="viewer" id="AutodeskViewer">
                     <div ref={this.viewerDiv}></div>
                     <link rel="stylesheet" type="text/css" href={ viewerCss } />
                     <Script url={ viewerJs } onLoad={this.handleScriptLoad.bind(this)} />

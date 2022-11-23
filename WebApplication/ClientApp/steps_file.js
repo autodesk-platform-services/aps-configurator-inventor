@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -53,7 +53,7 @@ const confirmDelete = '//button[@id="delete_ok_button"]';
 const paramsInput = '//div[@class="parameter"][text()="ParamName"]//input';
 
 // Canvas element in Forge Viewer
-const viewerCanvas = '//div[@id="ForgeViewer"]//canvas';
+const viewerCanvas = '//div[@id="AutodeskViewer"]//canvas';
 
 module.exports = function() {
 
@@ -259,7 +259,7 @@ module.exports = function() {
     },
     waitForForgeViewerToPreventItFromCrashing(timeout)
     {
-      this.waitForElement('//div[@id="ForgeViewer"] //div[@class="viewcube"]', timeout);
+      this.waitForElement('//div[@id="AutodeskViewer"] //div[@class="viewcube"]', timeout);
     },
     goToDrawingTab()
     {

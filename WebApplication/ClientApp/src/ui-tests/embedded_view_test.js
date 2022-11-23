@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Forge Design Automation team for Inventor
+// Written by Autodesk Design Automation team for Inventor
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -63,7 +63,7 @@ Scenario('should check that model tab doesnt have parameters pane', async ({ I }
     I.clickToModelTab();
 
     // check that Model tab has correct content
-    I.waitForVisible(locators.ForgeViewer, 240);
+    I.waitForVisible(locators.AutodeskViewer, 240);
     I.dontSeeElement(locators.ParametersContainer);
 });
 
