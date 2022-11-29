@@ -10,7 +10,7 @@ Sample **Inventor** add-in that compliments the **Configurator Web App** by prov
 1) Check the exact name of the bucket that the **Configurator Web App** generated on OSS and set the value of `bucketId` in `\ForgeControllers\Controllers\DataManagementController.cs` to that.
 You can use a tool like [Buckets Tools](https://oss-manager.autodesk.io/) to do that.
 
-1) In the **Project Properties** of **CatalogBuilder** on the **Debug** tab, set the **Output path** to `C:\ProgramData\Autodesk\ApplicationPlugins\<your Inventor version>\CatalogBuilder`.
+1) In the **Project Properties** of **CatalogBuilder** on the **Debug** tab, make sure **Output path** is set to `C:\ProgramData\Autodesk\ApplicationPlugins\CatalogBuilder`.
 
 1) Build the solution
 
