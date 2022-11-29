@@ -1,7 +1,7 @@
 # Configurator Inventor
 Demo application showcasing Configuration with Design Automation for Inventor
 
-![thumbnail](/img/thumbnail.gif)
+![thumbnail](/thumbnail.gif)
 
 ## Architecture
 
