@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1"
+          manifestVersion="1.0">
+
+  <assemblyIdentity name="CatalogBuilder"
+                    version="1.0.3847.26280"
+                    processorArchitecture="msil"></assemblyIdentity>
+
+  <clrClass clsid="{9B140960-B56E-42AF-9787-555256C95544}"
+            progid="CatalogBuilder.AddInServer"
+            threadingModel="Both"
+            name="CatalogBuilder.AddInServer"
+            runtimeVersion=""></clrClass>
+
+  <file name="CatalogBuilder.dll" hashalg="SHA1"></file>
+
+</assembly>

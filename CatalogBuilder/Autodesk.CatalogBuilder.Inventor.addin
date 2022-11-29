@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Type attribute is same as Type registry key (Standard, Translator, Plugin (Server only) -->
+<Addin Type="Standard">
+  <ClassId>{9B140960-B56E-42AF-9787-555256C95544}</ClassId>
+  <ClientId>{9B140960-B56E-42AF-9787-555256C95544}</ClientId>
+
+  <!-- Both of the following fields should be translated. NO OTHER FIELDS SHOULD BE TRANSLATED! -->
+  <DisplayName>CatalogBuilder</DisplayName>
+  <Description>CatalogBuilder</Description>
+
+  <!-- Assumes that CatalogBuilder.dll is underneath Inventor\bin -->
+  <Assembly>CatalogBuilder.dll</Assembly>
+
+  <SupportedSoftwareVersionGreaterThan>17..</SupportedSoftwareVersionGreaterThan>
+  <LoadOnStartUp>1</LoadOnStartUp>
+  <Hidden>0</Hidden>
+</Addin>
