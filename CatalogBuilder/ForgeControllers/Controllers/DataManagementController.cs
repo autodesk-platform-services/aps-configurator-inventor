@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Forge;
@@ -25,15 +26,42 @@ using Autodesk.Forge.Client;
 using Autodesk.Forge.Model;
 using ForgeControllers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace Autodesk.Forge.Controllers
 {
     public class DataManagementController
     {
-        private static string baseUrl = "https://developer.api.autodesk.com/oss/v2/";
-        private static string bucketId = "<name of bucket created by the configurator web app>";
+        private static string baseUrl;
+        private static string bucketId;
         static RestClient client = new RestClient();
+
+        public DataManagementController()
+        {
+            string appsettingsName = "appsettings.json";
+#if DEBUG
+            appsettingsName = "appsettings.debug.json";
+#endif
+
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string executingPath = Uri.UnescapeDataString(uri.Path);
+
+            string appsettingsDirectory = Path.GetDirectoryName(executingPath);
+
+            string appsettingsPath = Path.Combine(appsettingsDirectory, appsettingsName);
+            Console.WriteLine($"Base appsettings file path: {appsettingsPath}");
+
+            string appsettingsData = File.ReadAllText(appsettingsPath);
+            JObject appsettings = JObject.Parse(appsettingsData);
+            JToken forgeToken = appsettings["Forge"];
+            string clientID = forgeToken["ClientId"].ToString();
+            bucketId = "\"projects-" + clientID.ToLower();
+            JToken dmToken = forgeToken["DataManagment"];
+            baseUrl = dmToken["BaseAddress"].ToString();
+
+        }
 
 
         public void UploadObject(string filePath, string token)

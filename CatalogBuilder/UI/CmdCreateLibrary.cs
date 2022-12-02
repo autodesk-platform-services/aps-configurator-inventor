@@ -15,6 +15,7 @@
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
+using ForgeControllers.Controllers;
 using Newtonsoft.Json;
 using Shared;
 using System;
@@ -48,7 +49,7 @@ namespace CatalogBuilder.UI
 
         static HttpClient client = new HttpClient()
         {
-            BaseAddress = new Uri(Globals.BaseURL)
+            BaseAddress = new Uri(ConfiguratorController.BaseURL)
         };
 
         public override void StartCommand()

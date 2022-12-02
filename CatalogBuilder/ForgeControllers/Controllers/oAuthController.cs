@@ -18,7 +18,10 @@
 using Autodesk.Forge;
 using Autodesk.Forge.Client;
 using Autodesk.Forge.Model;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Autodesk.Forge.Controllers
@@ -27,20 +30,45 @@ namespace Autodesk.Forge.Controllers
 	{
 		// Initialize the oAuth 2.0 client configuration fron enviroment variables
 		// you can also hardcode them in the code if you want in the placeholders below
-		private static string APS_CLIENT_ID = "<your client id>";
+		private static string APS_CLIENT_ID;
 		//Environment.GetEnvironmentVariable("APS_CLIENT_ID") ?? "your_client_id";
-		private static string APS_CLIENT_SECRET = "<your client secret>";
+		private static string APS_CLIENT_SECRET;
 		//Environment.GetEnvironmentVariable("APS_CLIENT_SECRET") ?? "your_client_secret";
 		private static Scope[] _scope = new Scope[] { Scope.DataRead, Scope.DataWrite };
 
 		// Intialize the 2-legged oAuth 2.0 client.
 		private static TwoLeggedApi _twoLeggedApi = new TwoLeggedApi();
+
+		public static void SetClientIDAndSecret()
+		{
+            string appsettingsName = "appsettings.json";
+#if DEBUG
+            appsettingsName = "appsettings.debug.json";
+#endif
+
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string executingPath = Uri.UnescapeDataString(uri.Path);
+
+            string appsettingsDirectory = Path.GetDirectoryName(executingPath);
+
+            string appsettingsPath = Path.Combine(appsettingsDirectory, appsettingsName);
+            Console.WriteLine($"Base appsettings file path: {appsettingsPath}");
+
+            string appsettingsData = File.ReadAllText(appsettingsPath);
+            JObject appsettings = JObject.Parse(appsettingsData);
+            JToken appsettingsForgeToken = appsettings["Forge"];
+            APS_CLIENT_ID = appsettingsForgeToken["ClientId"].ToString();
+            APS_CLIENT_SECRET = appsettingsForgeToken["ClientSecret"].ToString();
+        }
         
 
 		public static string Token
 		{
 			get {
-				dynamic bearer = oAuthController._2leggedSynchronous();
+				SetClientIDAndSecret();
+
+                dynamic bearer = oAuthController._2leggedSynchronous();
 				if (bearer == null)
 				{
 					Console.WriteLine("You were not granted a new access_token!");
