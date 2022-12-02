@@ -28,7 +28,7 @@ namespace PluginUtilities
 {
     public class ParametersExtractor
     {
-        public void Extract(Document doc, Parameters parameters, InventorParameters updateResultParameters = null)
+        public void Extract(Document doc, Parameters parameters, InventorParameters updateResultParameters = null, bool close = true)
         {
             // extract user parameters
             InventorParameters allParams = ExtractParameters(doc, parameters);
@@ -82,8 +82,11 @@ namespace PluginUtilities
             string paramsJson = JsonConvert.SerializeObject(resultingParameters, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.None });
             System.IO.File.WriteAllText("documentParams.json", paramsJson);
 
-            LogTrace("Closing");
-            doc.Close(true);
+            if (close)
+            {
+                LogTrace("Closing");
+                doc.Close(true);
+            }
         }
 
         private InventorParameters ExtractParameters(Document doc, dynamic userParameters)

@@ -38,6 +38,8 @@ using Color = Inventor.Color;
 using WebApplication.Utilities;
 using WebApplication.Definitions;
 using System.Web;
+using System.Net.Http.Headers;
+using ForgeControllers.Controllers;
 
 namespace CatalogBuilder.UI
 {
@@ -105,10 +107,10 @@ namespace CatalogBuilder.UI
 
             CreateInventorParameters();
 
-            ParameterNormalizer parameterNormalizer = new ParameterNormalizer();
-            Dictionary<string, string> parametersDictionary = parameterNormalizer.NormailzeParameters(m_inventorParameters);
+            //ParameterNormalizer parameterNormalizer = new ParameterNormalizer();
+            //Dictionary<string, string> parametersDictionary = parameterNormalizer.NormailzeParameters(m_inventorParameters);
 
-            m_hash = Crypto.GenerateObjectHashString(parametersDictionary);
+            m_hash = Crypto.GenerateParametersHashString(m_inventorParameters);
 
             var t = Task.Run(async () =>
             {
@@ -131,7 +133,7 @@ namespace CatalogBuilder.UI
                     string jsonPathSignedUrl = 
                         await dMController.GetSignedURLAsync(jsonPathResponse, oAuthController.Token);
 
-                    string endPoint = "?url=";// "projects/adopt?url=";
+                    string endPoint = "projects/adopt?url=";
                     var configuration = 
                         await CreateConfiguration(jsonPathSignedUrl, endPoint);
 
@@ -139,6 +141,7 @@ namespace CatalogBuilder.UI
                 catch (Exception e)
                 {
                     MessageBox.Show(e.ToString());
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             });
 
@@ -193,19 +196,23 @@ namespace CatalogBuilder.UI
 
         static HttpClient client = new HttpClient()
         {
-            BaseAddress = new Uri(Globals.BaseURL)
+            BaseAddress = new Uri(ConfiguratorController.BaseURL)
+            
         };
 
 
 
-        public static async Task<ProjectWithParametersDTO> CreateConfiguration(string configURI, string endPoint)
+        public static async Task<ProjectDTO> CreateConfiguration(string configURI, string endPoint)
         {
 
             string encodedUri = HttpUtility.UrlEncode(configURI);
             string uri = endPoint + encodedUri;
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
             var response = await client.PostAsync(uri, null);
             var output = await response.Content.ReadAsStringAsync();
-            ProjectWithParametersDTO user = JsonConvert.DeserializeObject<ProjectWithParametersDTO>(output);
+            ProjectDTO user = JsonConvert.DeserializeObject<ProjectDTO>(output);
 
             return user;
 

@@ -22,6 +22,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using WebApplication.Definitions;
 using WebApplication.Services;
 using WebApplication.State;
@@ -39,8 +40,11 @@ namespace WebApplication.Controllers
         private readonly ProfileProvider _profileProvider;
         private readonly Uploads _uploads;
         private readonly ProjectService _projectService;
+        private readonly AdoptProjectWithParametersPayloadProvider _adoptProjectWithParametersPayloadProvider;
 
-        public ProjectsController(ILogger<ProjectsController> logger, DtoGenerator dtoGenerator, UserResolver userResolver, ProfileProvider profileProvider, Uploads uploads, ProjectService projectService)
+        public ProjectsController(ILogger<ProjectsController> logger, DtoGenerator dtoGenerator, 
+            UserResolver userResolver, ProfileProvider profileProvider, Uploads uploads, 
+            ProjectService projectService, AdoptProjectWithParametersPayloadProvider adoptProjectWithParametersPayloadProvider)
         {
             _logger = logger;
             _dtoGenerator = dtoGenerator;
@@ -48,6 +52,7 @@ namespace WebApplication.Controllers
             _profileProvider = profileProvider;
             _uploads = uploads;
             _projectService = projectService;
+            _adoptProjectWithParametersPayloadProvider = adoptProjectWithParametersPayloadProvider;
         }
 
         [HttpGet("")]
@@ -133,6 +138,22 @@ namespace WebApplication.Controllers
             await _projectService.DeleteProjects(projectNameList);
 
             return NoContent();
+        }
+        [HttpPost("adopt")]
+        public async Task<ActionResult<ProjectDTO>>AdoptProject([FromQuery] string url)
+        {
+            using var scope = _logger.BeginScope("Project Adoption ");
+
+            var payload = await _adoptProjectWithParametersPayloadProvider.GetParametersAsync(url);
+
+            _logger.LogInformation($"ProcessJob (AdoptProjectWithParameters)  for project {payload.Name} started.");
+
+            var projectWithParameters = await _projectService.AdoptProjectWithParametersAsync(payload);
+
+            _logger.LogInformation($"ProcessJob (AdoptProjectWithParameters) for project {payload.Name} completed.");
+
+            return projectWithParameters;
+
         }
     }
 }

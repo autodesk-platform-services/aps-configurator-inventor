@@ -252,10 +252,10 @@ namespace CatalogBuilder.UI
             List<string> result = new List<string>();
             foreach (ProjectConfiguration projectConfig in projectConfigurations)
             {
-                ParameterNormalizer parameterNormalizer = new ParameterNormalizer();
-                Dictionary<string, string> parametersDictionary = parameterNormalizer.NormailzeParameters(projectConfig.Config);
+                //ParameterNormalizer parameterNormalizer = new ParameterNormalizer();
+                //Dictionary<string, string> parametersDictionary = parameterNormalizer.NormailzeParameters(projectConfig.Config);
 
-                string hash = Crypto.GenerateObjectHashString(parametersDictionary);
+                string hash = Crypto.GenerateParametersHashString(projectConfig.Config);
                 string configJson = JsonConvert.SerializeObject(projectConfig, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.None });
                 string jsonFileName = projectConfig.Name + "." + hash + ".json";
                 string jsonPath = System.IO.Path.Combine(Globals.JsonDirectory, jsonFileName);

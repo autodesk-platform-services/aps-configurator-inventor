@@ -34,70 +34,47 @@ namespace CatalogBuilder
             get { return m_inventorApplication; }
         }
 
-        static string m_baseURL = "https://localhost:5001/";
-        public static string BaseURL
-        {
-            set { m_baseURL = value; }
-            get { return m_baseURL; }
-        }
-
-        static string m_bucketId = "projects-rlw-47d7d336825a8837618f3bed";
-        public static string BucketId
-        {
-
-            set { m_bucketId = value; }
-            get { return m_bucketId; }
-        }
-
-        static string m_JsonDirectory;
+        static string jsonDirectory;
         public static string JsonDirectory
         {
-            set { m_JsonDirectory = value; }
-            get { return m_JsonDirectory; }
+            set { jsonDirectory = value; }
+            get { return jsonDirectory; }
         }
 
-        static string m_projectName;
+        static string projectName;
         public static string ProjectName
         {
-            set { m_projectName = value; }
-            get { return m_projectName; }
+            set { projectName = value; }
+            get { return projectName; }
         }
 
-        static string m_topLevelAssembly;
+        static string topLevelAssembly;
         public static string TopLevelAssembly
         {
-            set { m_topLevelAssembly = value; }
-            get { return m_topLevelAssembly; }
+            set { topLevelAssembly = value; }
+            get { return topLevelAssembly; }
         }
 
-        static string m_projectUrl = "https://sdra-default-projects.s3-us-west-2.amazonaws.com/Wheel_2021.zip";
+        static string projectUrl;
         public static string ProjectUrl
         {
-            set { m_projectUrl = value; }
-            get { return m_projectUrl; }
+            set { projectUrl = value; }
+            get { return projectUrl; }
         }
 
-        static string m_configurationsURIsJsonPath;
+        static string configurationsURIsJsonPath;
         public static string ConfigurationsURIsJsonPath
         {
-            set { m_configurationsURIsJsonPath = value; }
-            get { return m_configurationsURIsJsonPath; }
+            set { configurationsURIsJsonPath = value; }
+            get { return configurationsURIsJsonPath; }
         }
 
-        static string m_configurationsJsonPath;
+        static string configurationsJsonPath;
         public static string ConfigurationsJsonPath
         {
-            set { m_configurationsJsonPath = value; }
-            get { return m_configurationsJsonPath; }
+            set { configurationsJsonPath = value; }
+            get { return configurationsJsonPath; }
         }
-
-        static InventorParameters m_inventorParameters;
-        public static InventorParameters InventorParameters
-        {
-            set { m_inventorParameters = value; }
-            get { return m_inventorParameters; }
-        }
-
 
     }
 }
