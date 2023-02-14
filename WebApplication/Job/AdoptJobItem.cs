@@ -45,7 +45,7 @@ namespace WebApplication.Job
 
         public override async Task ProcessJobAsync(IResultSender resultSender)
         {
-            using var scope = Logger.BeginScope("Project Adoption ({Id})");
+            using var scope = Logger.BeginScope($"Project Adoption ({Id})");
 
             Logger.LogInformation($"ProcessJob (Adopt) {Id} for project {_projectInfo.Name} started.");
 
