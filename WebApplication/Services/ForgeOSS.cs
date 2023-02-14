@@ -230,11 +230,6 @@ namespace WebApplication.Services
             ));
         }
 
-        public async Task UploadChunkAsync(string bucketKey, string objectName, string contentRange, string sessionId, Stream stream)
-        {
-            await WithObjectsApiAsync(async api => await api.UploadChunkAsync(bucketKey, objectName, 0, contentRange, sessionId, stream));
-        }
-
         /// <summary>
         /// Rename object.
         /// </summary>
