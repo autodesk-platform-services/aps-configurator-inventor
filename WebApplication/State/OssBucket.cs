@@ -223,7 +223,7 @@ namespace WebApplication.State
         {
             try
             {
-                await CreateSignedUrlAsync(objectName); // don't care about result
+                await _forgeOSS.GetObjectDetailsAsync(BucketKey, objectName); // don't care about result
                 return true;
             }
             catch (ApiException ex) when (ex.ErrorCode == 404)

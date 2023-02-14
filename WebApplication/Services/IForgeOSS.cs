@@ -80,6 +80,8 @@ namespace WebApplication.Services
         /// </summary>
         Task DownloadFileAsync(string bucketKey, string objectName, string localFullName);
 
+        Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName);
+
         /// <summary>
         /// Get profile for the user with the access token.
         /// </summary>

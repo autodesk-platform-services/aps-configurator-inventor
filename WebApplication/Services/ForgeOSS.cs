@@ -89,7 +89,17 @@ namespace WebApplication.Services
                     TimeSpan.FromSeconds(20),
                     TimeSpan.FromSeconds(40)
                 });
-            _ossResiliencyPolicy = refreshTokenPolicy.WrapAsync(rateLimitRetryPolicy).WrapAsync(bulkHeadPolicy);
+            var waitForObjectPolicy = Policy
+                .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status404NotFound)
+                .WaitAndRetryAsync(
+                    retryCount: 4,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (exception, timeSpan) => _logger.LogWarning("Cannot get fresh OSS object. Repeating")
+                );
+            _ossResiliencyPolicy = refreshTokenPolicy
+                .WrapAsync(rateLimitRetryPolicy)
+                .WrapAsync(bulkHeadPolicy)
+                .WrapAsync(waitForObjectPolicy);
         }
 
         public static bool PropertyExists(dynamic obj, string name)
@@ -218,6 +228,12 @@ namespace WebApplication.Services
             return await WithObjectsApiAsync(async api => await GetSignedUrl(api, bucketKey, objectName, access, minutesExpiration));
         }
 
+        public async Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName)
+        {
+            var api = new ObjectsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
+            return await api.GetObjectDetailsAsync(bucketKey, objectName);
+        }
+
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
             //await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, (int)stream.Length, stream));
@@ -254,18 +270,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            while (true)
-            {
-                try
-                {
-                    await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
-            }
+            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));       
         }
 
         /// <summary>
