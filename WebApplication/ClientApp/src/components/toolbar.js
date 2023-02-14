@@ -21,14 +21,12 @@ import { connect } from 'react-redux';
 import { loadProfile } from '../actions/profileActions';
 import { getProfile, loginFailedShowing } from '../reducers/mainReducer';
 import UserDetails from './userDetails.js';
-import Typography from "@hig/typography";
 import ModalFail from './modalFail';
 import { showLoginFailed } from '../actions/uiFlagsActions';
 import './toolbar.css';
 
 import TopNav, {
   Logo,
-  LogoText,
   Interactions,
   ProfileAction,
   NavAction,
