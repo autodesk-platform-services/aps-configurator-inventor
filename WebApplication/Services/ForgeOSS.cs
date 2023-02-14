@@ -33,6 +33,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Polly;
+using Polly.Wrap;
 using WebApplication.Utilities;
 
 namespace WebApplication.Services
@@ -51,7 +52,7 @@ namespace WebApplication.Services
         private readonly ILogger<ForgeOSS> _logger;
         private static readonly Scope[] _scope = { Scope.DataRead, Scope.DataWrite, Scope.BucketCreate, Scope.BucketDelete, Scope.BucketRead };
 
-        private readonly Policy _ossResiliencyPolicy;
+        private readonly AsyncPolicyWrap _ossResiliencyPolicy;
 
         public Task<string> TwoLeggedAccessToken => _twoLeggedAccessToken.Value;
         private Lazy<Task<string>> _twoLeggedAccessToken;
