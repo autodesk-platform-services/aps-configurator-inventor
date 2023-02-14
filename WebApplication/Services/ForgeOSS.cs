@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Forge;
 using Autodesk.Forge.Client;
@@ -218,7 +219,15 @@ namespace WebApplication.Services
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, (int)stream.Length, stream));
+            //await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, (int)stream.Length, stream));
+            //StreamReader reader = new StreamReader(stream);
+            //string text = reader.ReadToEnd();
+            await WithObjectsApiAsync(async api => await api.uploadResources(
+                bucketKey,
+                new List<UploadItemDesc> {
+                    new UploadItemDesc(objectName, stream)
+                }
+            ));
         }
 
         public async Task UploadChunkAsync(string bucketKey, string objectName, string contentRange, string sessionId, Stream stream)
@@ -249,7 +258,18 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));
+            while (true)
+            {
+                try
+                {
+                    await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));
+                    break;
+                }
+                catch
+                {
+                    await Task.Delay(1000);
+                }
+            }
         }
 
         /// <summary>
