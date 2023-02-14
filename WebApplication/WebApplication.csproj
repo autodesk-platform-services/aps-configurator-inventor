@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autodesk.Forge" Version="1.7.0" />
+    <PackageReference Include="Autodesk.Forge" Version="1.9.7" />
     <PackageReference Include="Autodesk.Forge.DesignAutomation" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />

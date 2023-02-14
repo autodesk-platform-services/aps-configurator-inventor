@@ -218,7 +218,7 @@ namespace WebApplication.Services
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, 0, stream));
+            await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, (int)stream.Length, stream));
         }
 
         public async Task UploadChunkAsync(string bucketKey, string objectName, string contentRange, string sessionId, Stream stream)
