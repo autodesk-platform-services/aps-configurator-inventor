@@ -236,9 +236,6 @@ namespace WebApplication.Services
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            //await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, (int)stream.Length, stream));
-            //StreamReader reader = new StreamReader(stream);
-            //string text = reader.ReadToEnd();
             await WithObjectsApiAsync(async api => await api.uploadResources(
                 bucketKey,
                 new List<UploadItemDesc> {

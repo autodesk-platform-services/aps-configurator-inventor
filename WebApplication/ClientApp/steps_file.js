@@ -119,7 +119,6 @@ module.exports = function() {
       this.waitForNavigation();
 
       let currentUrl = await this.grabCurrentUrl();
-      console.log({ currentUrl });
       // in case it's using multifactor authentication
       if (currentUrl.includes('microsoftonline')) {
         throw("Please use an Autodesk account that does not require multi-factor authentication")
