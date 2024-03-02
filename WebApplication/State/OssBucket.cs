@@ -199,11 +199,6 @@ namespace WebApplication.State
             await _forgeOSS.UploadObjectAsync(BucketKey, objectName, stream);
         }
 
-        public async Task UploadChunkAsync(string objectName, string contentRange, string sessionId, Stream stream)
-        {
-            await _forgeOSS.UploadChunkAsync(BucketKey, objectName, contentRange, sessionId, stream);
-        }
-
         public async Task<ApiResponse<dynamic>> GetObjectAsync(string objectName)
         {
             return await _forgeOSS.GetObjectAsync(BucketKey, objectName);
@@ -228,7 +223,7 @@ namespace WebApplication.State
         {
             try
             {
-                await CreateSignedUrlAsync(objectName); // don't care about result
+                await _forgeOSS.GetObjectDetailsAsync(BucketKey, objectName); // don't care about result
                 return true;
             }
             catch (ApiException ex) when (ex.ErrorCode == 404)
@@ -260,40 +255,10 @@ namespace WebApplication.State
         /// </summary>
         public async Task SmartUploadAsync(string fileName, string objectName, int chunkMbSize = 5)
         {
-            // 2MB is minimal, clamp to it
-            chunkMbSize = Math.Max(2, chunkMbSize);
-            long chunkSize = chunkMbSize * 1024 * 1024;
-
             await using var fileReadStream = File.OpenRead(fileName);
 
-            // determine if we need to upload in chunks or in one piece
-            long sizeToUpload = fileReadStream.Length;
-
-            // use chunks for all files greater than chunk size
-            if (sizeToUpload > chunkSize)
-            {
-                _logger.LogInformation($"Uploading in {chunkMbSize}MB chunks");
-
-                string sessionId = Guid.NewGuid().ToString();
-                long begin = 0;
-                byte[] buffer = new byte[chunkSize];
-
-                while (begin < sizeToUpload-1)
-                {
-                    var bytesRead = await fileReadStream.ReadAsync(buffer, 0, (int)chunkSize);
-
-                    int memoryStreamSize = sizeToUpload - begin < chunkSize ? (int)(sizeToUpload - begin) : (int)chunkSize;
-                    await using var chunkStream = new MemoryStream(buffer, 0, memoryStreamSize);
-                    
-                    var contentRange = $"bytes {begin}-{begin + bytesRead - 1}/{sizeToUpload}";
-                    await UploadChunkAsync(objectName, contentRange, sessionId, chunkStream);
-                    begin += bytesRead;
-                }
-            }
-            else
-            {
-                await UploadObjectAsync(objectName, fileReadStream);
-            }
+            // The underlying APS .NET SDK already does chunking  
+            await UploadObjectAsync(objectName, fileReadStream);
         }
     }
 }

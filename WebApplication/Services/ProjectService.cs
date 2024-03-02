@@ -21,7 +21,7 @@ namespace WebApplication.Services
         private readonly ILogger<ProjectService> _logger;
         private readonly UserResolver _userResolver;
         private readonly ProjectWork _projectWork;
-        private readonly RetryPolicy _waitForBucketPolicy;
+        private readonly AsyncRetryPolicy _waitForBucketPolicy;
         private readonly DtoGenerator _dtoGenerator;
 
         public ProjectService(ILogger<ProjectService> logger, UserResolver userResolver, ProjectWork projectWork, DtoGenerator dtoGenerator)

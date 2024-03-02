@@ -41,9 +41,23 @@ namespace CreateSVFPlugin
             Automation = new CreateSvfAutomation(_inventorServer);
         }
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
+
         public void Deactivate()
         {
             Trace.TraceInformation(": CreateSVFPlugin: deactivating... ");
+
+			if (false) {
+				// Showing how app bundle could be exited if the 
+				// ReleaseComObject would go on for too long
+				// causing a timeout issue on the server
+				Trace.TraceInformation(": Killing the process ... ");
+
+				var h = Process.GetCurrentProcess().Handle;
+				TerminateProcess(h, 0);
+			}
 
             // Release objects.
             Marshal.ReleaseComObject(_inventorServer);

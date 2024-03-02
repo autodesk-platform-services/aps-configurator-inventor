@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Forge;
 using Autodesk.Forge.Client;
@@ -32,6 +33,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Polly;
+using Polly.Wrap;
 using WebApplication.Utilities;
 
 namespace WebApplication.Services
@@ -50,7 +52,7 @@ namespace WebApplication.Services
         private readonly ILogger<ForgeOSS> _logger;
         private static readonly Scope[] _scope = { Scope.DataRead, Scope.DataWrite, Scope.BucketCreate, Scope.BucketDelete, Scope.BucketRead };
 
-        private readonly Policy _ossResiliencyPolicy;
+        private readonly AsyncPolicyWrap _ossResiliencyPolicy;
 
         public Task<string> TwoLeggedAccessToken => _twoLeggedAccessToken.Value;
         private Lazy<Task<string>> _twoLeggedAccessToken;
@@ -87,7 +89,17 @@ namespace WebApplication.Services
                     TimeSpan.FromSeconds(20),
                     TimeSpan.FromSeconds(40)
                 });
-            _ossResiliencyPolicy = refreshTokenPolicy.WrapAsync(rateLimitRetryPolicy).WrapAsync(bulkHeadPolicy);
+            var waitForObjectPolicy = Policy
+                .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status404NotFound)
+                .WaitAndRetryAsync(
+                    retryCount: 4,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (exception, timeSpan) => _logger.LogWarning("Cannot get fresh OSS object. Repeating")
+                );
+            _ossResiliencyPolicy = refreshTokenPolicy
+                .WrapAsync(rateLimitRetryPolicy)
+                .WrapAsync(bulkHeadPolicy)
+                .WrapAsync(waitForObjectPolicy);
         }
 
         public static bool PropertyExists(dynamic obj, string name)
@@ -216,14 +228,20 @@ namespace WebApplication.Services
             return await WithObjectsApiAsync(async api => await GetSignedUrl(api, bucketKey, objectName, access, minutesExpiration));
         }
 
-        public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
+        public async Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName)
         {
-            await WithObjectsApiAsync(async api => await api.UploadObjectAsync(bucketKey, objectName, 0, stream));
+            var api = new ObjectsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
+            return await api.GetObjectDetailsAsync(bucketKey, objectName);
         }
 
-        public async Task UploadChunkAsync(string bucketKey, string objectName, string contentRange, string sessionId, Stream stream)
+        public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithObjectsApiAsync(async api => await api.UploadChunkAsync(bucketKey, objectName, 0, contentRange, sessionId, stream));
+            await WithObjectsApiAsync(async api => await api.uploadResources(
+                bucketKey,
+                new List<UploadItemDesc> {
+                    new UploadItemDesc(objectName, stream)
+                }
+            ));
         }
 
         /// <summary>
@@ -249,7 +267,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));
+            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));       
         }
 
         /// <summary>

@@ -108,15 +108,26 @@ module.exports = function() {
       this.seeTitleEquals('Sign in');
       this.waitForElement(inputUserName, 10);
 
+      // wait before filling in the text box
+      this.wait(1);
       // specify Sign-in Email
       this.fillField(inputUserName, loginName);
       // after updating dependencies we are so quick on click action that user name don't have time to be filled in
       // this is why we need a delay for printing the username
       this.wait(3);
       this.click(buttonNext);
+      this.waitForNavigation();
+
+      let currentUrl = await this.grabCurrentUrl();
+      // in case it's using multifactor authentication
+      if (currentUrl.includes('microsoftonline')) {
+        throw("Please use an Autodesk account that does not require multi-factor authentication")
+      } 
 
       // specify Sign-in password
       this.waitForVisible(inputPassword, 10);
+      // wait before filling in the text box
+      this.wait(1);
       this.fillField(inputPassword, password);
       // after updating dependencies we are so quick on click action that password don't have time to be filled in
       // this is why we need a delay for printing the password
@@ -127,7 +138,7 @@ module.exports = function() {
       // look for the URL to determine if we are asked
       // to agree to authorize our application
       this.waitForNavigation();
-      const currentUrl = await this.grabCurrentUrl();
+      currentUrl = await this.grabCurrentUrl();
       if (currentUrl.includes('auth.autodesk.com')) {
         // click on Allow Button
         this.waitForVisible(allowButton, 15);

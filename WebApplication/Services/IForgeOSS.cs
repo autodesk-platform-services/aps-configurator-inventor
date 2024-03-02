@@ -43,7 +43,6 @@ namespace WebApplication.Services
         Task CreateBucketAsync(string bucketKey);
         Task DeleteBucketAsync(string bucketKey);
         Task UploadObjectAsync(string bucketKey, string objectName, Stream stream);
-        Task UploadChunkAsync(string bucketKey, string objectName, string contentRange, string sessionId, Stream stream);
 
         /// <summary>
         /// Generate a signed URL to OSS object.
@@ -80,6 +79,8 @@ namespace WebApplication.Services
         /// Download OSS file.
         /// </summary>
         Task DownloadFileAsync(string bucketKey, string objectName, string localFullName);
+
+        Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName);
 
         /// <summary>
         /// Get profile for the user with the access token.
