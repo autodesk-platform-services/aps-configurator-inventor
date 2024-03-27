@@ -20,7 +20,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
     * [psioniq File Header](https://marketplace.visualstudio.com/items?itemName=psioniq.psi-header) (to insert copyright header)
 ### App Bundles
 1. Autodesk Inventor 2021
-1. Visual Studio 2019
+1. Visual Studio 2022
 
 ## Run sample for the first time
 1. Clone repository
@@ -41,7 +41,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
    Change `"CompletionCheck"` value from `"Polling"` to `"Callback"` and set `"CallbackUrlBase"` url to your server URL or ngrok tunnel URL for a locally run application.
    To run and debug callbacks locally please refer to the [ngrok section](#Use-ngrok-for-localhost-callbacks)
 1. *(Optional) Specify if access should be limited in `WebApplication\appsettings.json`. Set `Enabled` to `true` or `false`, and populate the `Domains` and `Addresses` fields with comma delimited lists such as `["autodesk.com", "company.com"]` and `["person@company2.com", "person@company3.com"]`*
-1. Open the `aps-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
+1. Open the `aps-configurator-inventor.sln` file with **Visual Studio 2022** and build the solution
 ![thumbnail](/img/BuildSolution.png)\
 This will also generate the **zip** files of all the **app bundles** that the **web app** will need to upload to the **Design Automation** server\
 ![thumbnail](/img/AppBundleZips.png)\
@@ -60,7 +60,7 @@ This time your browser should open up **automatically** showing the correct **UR
 * Building the projects also installs required packages (this can take several minutes).
 
 ### Web Application and App Bundles
-* Open the `aps-configurator-inventor.sln` file with **Visual Studio 2019** and build the solution
+* Open the `aps-configurator-inventor.sln` file with **Visual Studio 2022** and build the solution
 
 ### Web Application Alone
 * From a command prompt, go to the `WebApplication` directory, and run `dotnet build`.
@@ -93,7 +93,7 @@ This time your browser should open up **automatically** showing the correct **UR
 ## Run/Debug Tests
 ### Backend
 * Note that running the tests clears initialization data, so you will either need to change APS credentials before running them, or run the initializer again afterward. See [Clear and load initial data...](#clear-and-load-initial-data-during-app-launch-time)
-1. From Visual Studio 2019
+1. From Visual Studio 2022
     * Open Test Explorer and select tests to run or debug
 1. From Visual Studio Code
     * Open a test file in the `WebApplication.Tests` directory and click on either `Run Test` or `Debug Test` above one of the methods decorated with the `[Fact]` attribute. Or, above the class declaration click on either `Run All Tests` or `Debug All Tests`
