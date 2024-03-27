@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autodesk.Forge" Version="1.9.7" />
-    <PackageReference Include="Autodesk.Forge.DesignAutomation" Version="5.1.1" />
+    <PackageReference Include="Autodesk.Forge" Version="1.9.9" />
+    <PackageReference Include="Autodesk.Forge.DesignAutomation" Version="5.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.14" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
