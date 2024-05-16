@@ -205,7 +205,7 @@ namespace WebApplication.Services
             await WithBucketApiAsync(async api =>
             {
                 var payload = new PostBucketsPayload(bucketKey, /*allow*/null, PostBucketsPayload.PolicyKeyEnum.Persistent);
-                await api.CreateBucketAsync(payload, /* use default (US region) */ null);
+                await api.CreateBucketAsync(payload, "US");
             });
         }
 

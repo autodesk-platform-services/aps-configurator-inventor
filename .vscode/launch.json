@@ -10,6 +10,13 @@
       }
    ],
    "configurations": [
+    {
+      "name": "PowerShell Launch Current File",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${file}",
+      "cwd": "${cwd}"
+    },
         {
           "name": "Debug Jest All",
           "type": "node",
@@ -49,7 +56,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/WebApplication/bin/Debug/netcoreapp3.1/WebApplication.dll",
+            "program": "${workspaceFolder}/WebApplication/bin/Debug/net6.0/WebApplication.dll",
             "args": [],
             "cwd": "${workspaceFolder}/WebApplication",
             "stopAtEntry": false,
