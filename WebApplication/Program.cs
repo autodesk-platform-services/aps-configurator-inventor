@@ -68,6 +68,7 @@ namespace WebApplication
             {
                 host.ConfigureWebHostDefaults(webBuilder =>
                     {
+                        webBuilder.UseUrls("http://localhost:5000", "https://localhost:5001");
                         webBuilder.UseStartup<Startup>().UseKestrel(options =>
                         {
                             long sizeinMB = 1000;
