@@ -10,7 +10,7 @@ ENV NUGET_PACKAGES=c:\\sdra\\nuget
 ADD FontsToAdd.tar /Fonts/
 
 WORKDIR /Fonts/
-# RUN .\\Add-Font.ps1 Fonts
+RUN ./Add-Font.ps1 Fonts
 
 WORKDIR /
 RUN Remove-Item Fonts -Recurse

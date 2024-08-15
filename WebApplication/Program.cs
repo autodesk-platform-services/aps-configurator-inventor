@@ -81,6 +81,11 @@ namespace WebApplication
                             webBuilder.UseUrls("http://*:" + port);
                             Log.Logger.Information($"PORT environment variable defined to:{port}");
                         }
+                        else
+                        {
+                            // Default ports
+                            webBuilder.UseUrls("http://localhost:5000", "https://localhost:5001");
+                        }
                     });
             }
 
