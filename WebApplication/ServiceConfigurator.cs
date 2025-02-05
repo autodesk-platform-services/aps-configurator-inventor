@@ -62,6 +62,7 @@ namespace WebApplication
             });
 
             services.AddHttpClient();
+            services.AddHttpContextAccessor();
 
             services.Configure<FormOptions>(x =>
             {
@@ -94,6 +95,7 @@ namespace WebApplication
             services.AddSingleton<Publisher>();
             services.AddSingleton<BucketPrefixProvider>();
             services.AddSingleton<LocalCache>();
+            services.AddSingleton<TokenService>();
             services.AddSingleton<Uploads>();
             services.AddSingleton<OssBucketFactory>();
             services.AddSingleton<AdoptProjectWithParametersPayloadProvider>();

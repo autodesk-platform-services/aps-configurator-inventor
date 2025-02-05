@@ -69,6 +69,7 @@ namespace WebApplication.Middleware
                 appBuilder =>
                 {
                     appBuilder.UseMiddleware<HeaderTokenHandler>();
+                    appBuilder.UseMiddleware<SvfHeaderTokenHandler>();
                     appBuilder.UseMiddleware<SvfRestore>();
                 });
 

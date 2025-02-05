@@ -24,9 +24,9 @@ import * as downloadActions from './downloadActions';
 import { actionTypes as uiFlagsActionTypes } from './uiFlagsActions';
 
 const aLink = 'https://some.link';
-const tokenMock = 'theToken';
-const fullLink = `${aLink}/${tokenMock}`;
-const noTokenLink = `${aLink}`;
+const codeMock = 'theCode';
+const fullLink = `${aLink}/${codeMock}`;
+const noCodeLink = `${aLink}`;
 const errorReportLink = 'https://error.link';
 const jobId = 'job1';
 const theStats = { credits: 1 };
@@ -34,8 +34,8 @@ const theStats = { credits: 1 };
 import signalRConnectionMock from '../test/mockSignalR';
 
 import repoInstance from '../Repository';
-repoInstance.getAccessToken = function() {
-    return tokenMock;
+repoInstance.getAccessCode = function() {
+    return codeMock;
 };
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -89,7 +89,7 @@ describe('downloadActions', () => {
             // check expected store actions
             const actions = store.getActions();
             const linkAction = actions.find(a => a.type === uiFlagsActionTypes.SET_DRAWING_URL);
-            expect(linkAction.url).toEqual(noTokenLink);
+            expect(linkAction.url).toEqual(noCodeLink);
 
             // check that stats is preset
             expect(actions.some(a => a.type === uiFlagsActionTypes.SET_STATS && a.stats === theStats)).toBeTruthy();

@@ -29,10 +29,10 @@ using WebApplication.Utilities;
 
 namespace WebApplication.Controllers
 {
-    // The app is not keeping user session, so it's necessary to pass auth token
+    // The app is not keeping user session, so it's necessary to pass auth code
     // for authenticated users to resolve the downloaded item correctly.
-    // By implementation the token will be appended by client-side to the end of download URL, so
-    // the download route should contain optional `token` argument, which will be extracted
+    // By implementation the code will be appended by client-side to the end of download URL, so
+    // the download route should contain optional `code` argument, which will be extracted
     // and applied to the execution context by `RouteTokenPipeline` middleware.
     [ApiController]
     [Route("download")]
@@ -48,20 +48,20 @@ namespace WebApplication.Controllers
             _userResolver = userResolver;
         }
 
-        [HttpGet("{projectName}/{hash}/model/{token?}")]
-        public Task<RedirectResult> Model(string projectName, string hash, string token = null)
+        [HttpGet("{projectName}/{hash}/model/{code?}")]
+        public Task<RedirectResult> Model(string projectName, string hash, string code = null)
         {
             return RedirectToOssObject(projectName, hash, (ossNames, isAssembly) => ossNames.GetCurrentModel(isAssembly));
         }
 
-        [HttpGet("{projectName}/{hash}/rfa/{token?}")]
-        public Task<RedirectResult> RFA(string projectName, string hash, string token = null)
+        [HttpGet("{projectName}/{hash}/rfa/{code?}")]
+        public Task<RedirectResult> RFA(string projectName, string hash, string code = null)
         {
             return RedirectToOssObject(projectName, hash, (ossNames, _)=> ossNames.Rfa);
         }
 
-        [HttpGet("{projectName}/{hash}/bom/{token?}")]
-        public async Task<ActionResult> BOM(string projectName, string hash, string token = null)
+        [HttpGet("{projectName}/{hash}/bom/{code?}")]
+        public async Task<ActionResult> BOM(string projectName, string hash, string code = null)
         {
             string localFileName = await _userResolver.EnsureLocalFile(projectName, LocalName.BOM, hash);
             var bom = Json.DeserializeFile<ExtractedBOM>(localFileName);
@@ -73,15 +73,15 @@ namespace WebApplication.Controllers
         }
 
         // viewer expects PDF extension, so `drawing.pdf` is a piece of the route
-        [HttpGet("{projectName}/{hash}/{index}/drawing.pdf/{token?}")]
-        public async Task<ActionResult> DrawingPdf(string projectName, string hash, int index, string token = null)
+        [HttpGet("{projectName}/{hash}/{index}/drawing.pdf/{code?}")]
+        public async Task<ActionResult> DrawingPdf(string projectName, string hash, int index, string code = null)
         {
             string localFileName = await _userResolver.EnsureLocalFile(projectName, LocalName.DrawingPdf(index), hash);
             return new PhysicalFileResult(localFileName, "application/pdf") { FileDownloadName = LocalName.DrawingPdf(index) };
         }
 
-        [HttpGet("{projectName}/{hash}/drawing/{token?}")]
-        public Task<RedirectResult> Drawing(string projectName, string hash, string token = null)
+        [HttpGet("{projectName}/{hash}/drawing/{code?}")]
+        public Task<RedirectResult> Drawing(string projectName, string hash, string code = null)
         {
             return RedirectToOssObject(projectName, hash, (ossNames, _) => ossNames.Drawing);
         }

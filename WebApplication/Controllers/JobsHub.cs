@@ -124,44 +124,44 @@ namespace WebApplication.Controllers
             _sender = new Sender(this);
         }
 
-        public async Task CreateUpdateJob(string projectId, InventorParameters parameters, string token)
+        public async Task CreateUpdateJob(string projectId, InventorParameters parameters, string code)
         {
             _logger.LogInformation($"invoked CreateJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // create job and run it
             var job = new UpdateModelJobItem(_logger, projectId, parameters, _projectWork);
             await RunJobAsync(job);
         }
 
-        public async Task CreateRFAJob(string projectId, string hash, string token)
+        public async Task CreateRFAJob(string projectId, string hash, string code)
         {
             _logger.LogInformation($"invoked CreateRFAJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // create job and run it
             var job = new RFAJobItem(_logger, projectId, hash, _projectWork, _linkGenerator);
             await RunJobAsync(job);
         }
 
-        public async Task CreateDrawingDownloadJob(string projectId, string hash, string token)
+        public async Task CreateDrawingDownloadJob(string projectId, string hash, string code)
         {
             _logger.LogInformation($"invoked CreateDrawingDownloadJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // create job and run it
             var job = new DrawingJobItem(_logger, projectId, hash, _projectWork, _linkGenerator);
             await RunJobAsync(job);
         }
 
-        public async Task CreateAdoptJob(string packageId, string token)
+        public async Task CreateAdoptJob(string packageId, string code)
         {
             _logger.LogInformation($"invoked CreateAdoptJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // get upload information
             (ProjectInfo projectInfo, string fileName) = _uploads.GetUploadData(packageId);
@@ -172,18 +172,18 @@ namespace WebApplication.Controllers
             await RunJobAsync(job);
         }
 
-        public async Task CreateDrawingPdfJob(string projectId, string hash, string drawingKey, string token)
+        public async Task CreateDrawingPdfJob(string projectId, string hash, string drawingKey, string code)
         {
             _logger.LogInformation($"invoked CreateDrawingPdfJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // create job and run it
             var job = new ExportDrawingPdfJobItem(_logger, projectId, hash, drawingKey, _projectWork, _linkGenerator);
             await RunJobAsync(job);
         }
 
-        public async Task CreateAdoptProjectWithParametersJob(string payloadUrl, string token = null)
+        public async Task CreateAdoptProjectWithParametersJob(string payloadUrl, string code = null)
         {
             if (!_configuration.GetValue<bool>("embedded"))
             {
@@ -193,7 +193,7 @@ namespace WebApplication.Controllers
 
             _logger.LogInformation($"invoked CreateDrawingPdfJob, connectionId : {Context.ConnectionId}");
 
-            _profileProvider.Token = token;
+            _profileProvider.Code = code;
 
             // create job and run it
             var job = new AdoptProjectWithParametersJobItem(_logger, _projectService, payloadUrl, _adoptProjectWithParametersPayloadProvider);

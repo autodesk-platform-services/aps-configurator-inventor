@@ -17,13 +17,17 @@
 /////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Autodesk.Forge.Core;
+using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WebApplication.Definitions;
+using WebApplication.Middleware;
 using WebApplication.Services;
 using WebApplication.State;
 using WebApplication.Utilities;
@@ -39,18 +43,20 @@ namespace WebApplication.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly ProfileProvider _profileProvider;
         private readonly InviteOnlyModeConfiguration _inviteOnlyModeConfig;
+        private readonly TokenService _tokenService;
 
         /// <summary>
         /// Forge configuration.
         /// </summary>
         public ForgeConfiguration Configuration { get; }
 
-        public LoginController(ILogger<LoginController> logger, IOptions<ForgeConfiguration> optionsAccessor, ProfileProvider profileProvider, IOptions<InviteOnlyModeConfiguration> inviteOnlyModeOptionsAccessor)
+        public LoginController(ILogger<LoginController> logger, IOptions<ForgeConfiguration> optionsAccessor, ProfileProvider profileProvider, IOptions<InviteOnlyModeConfiguration> inviteOnlyModeOptionsAccessor, TokenService  tokenService)
         {
             _logger = logger;
             _profileProvider = profileProvider;
             Configuration = optionsAccessor.Value.Validate();
             _inviteOnlyModeConfig = inviteOnlyModeOptionsAccessor.Value;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -58,25 +64,40 @@ namespace WebApplication.Controllers
         {
             _logger.LogInformation("Authorize against the Oxygen");
 
-            // prepare redirect URL for Oxygen
-            // NOTE: This MUST match the pattern of the callback URL field of the app's registration
-            // TODO: workaround which may be removed once application will start to use https
-            var scheme = HttpContext.Request.Scheme;
-            if (HttpContext.Request.Host.Host == "inventor-config-demo.autodesk.io" ||
-                HttpContext.Request.Host.Host == "inventor-config-demo-dev.autodesk.io" )
-            {
-                scheme = "https";
-            }
-            var callbackUrl = $"{scheme}{Uri.SchemeDelimiter}{HttpContext.Request.Host}";
+            var callbackUrl = _tokenService.GetCallbackUrl();
             var encodedHost = HttpUtility.UrlEncode(callbackUrl);
 
             // prepare scope
             var scopes = new[] { "user-profile:read" };
             var fullScope = string.Join("%20", scopes); // it's not necessary now, but kept in case we need it in future
 
+            string verifierID = CryptoRandom.CreateUniqueId(10);
+            string codeVerifier = CryptoRandom.CreateUniqueId(32);
+            _tokenService.id2Verifier.TryAdd(verifierID, codeVerifier);
+
+            string code_challenge;
+            using (var sha256 = SHA256.Create())
+            {
+                // Here we create a hash of the code verifier
+                var challengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
+
+                // and produce the "Code Challenge" from it by base64Url encoding it.
+                code_challenge = Base64Url.Encode(challengeBytes);
+            }
+            string code_challenge_method = "S256";
+
             // build auth url (https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authorize-GET)
             string baseUrl = Configuration.AuthenticationAddress.GetLeftPart(System.UriPartial.Authority);
-            var authUrl = $"{baseUrl}/authentication/v2/authorize?response_type=token&client_id={Configuration.ClientId}&redirect_uri={encodedHost}&scope={fullScope}";
+            var authUrl = string.Format("{0}/authentication/v2/authorize?response_type=code&client_id={1}&redirect_uri={2}&scope={3}&code_challenge={4}&code_challenge_method={5}&state={6}",
+                baseUrl,
+                /*client_id*/Configuration.ClientId,
+                /*redirect_uri*/encodedHost,
+                /*scope*/fullScope,
+                /*code_challenge*/code_challenge,
+                /*code_challenge_method*/code_challenge_method,
+                /*state*/verifierID
+            );
+
             return Redirect(authUrl);
         }
 

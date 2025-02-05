@@ -52,7 +52,7 @@ class JobManager {
                 onError(errorData);
         });
 
-        await connection.invoke('CreateUpdateJob', projectId, parameters, repo.getAccessToken());
+        await connection.invoke('CreateUpdateJob', projectId, parameters, repo.getAccessCode());
     }
 
 
@@ -77,7 +77,7 @@ class JobManager {
                 onError(errorData);
         });
 
-        await connection.invoke('CreateAdoptJob', packageId, repo.getAccessToken());
+        await connection.invoke('CreateAdoptJob', packageId, repo.getAccessCode());
     }
 
     async doAdoptWithParameters(parameters, onStart, onComplete, onError) {
@@ -101,7 +101,7 @@ class JobManager {
                 onError(jobId, reportUrl);
         });
 
-        await connection.invoke("CreateAdoptProjectWithParametersJob", parameters, repo.getAccessToken());
+        await connection.invoke("CreateAdoptProjectWithParametersJob", parameters, repo.getAccessCode());
     }
 
     /**
@@ -130,9 +130,9 @@ class JobManager {
             }
 
             if (onSuccess) {
-                const token = repo.getAccessToken();
-                if (token) {
-                    downloadUrl += "/" + token;
+                const code = repo.getAccessCode();
+                if (code) {
+                    downloadUrl += "/" + code;
                 }
                 onSuccess(downloadUrl, stats, reportUrl);
             }
@@ -145,9 +145,9 @@ class JobManager {
         });
 
         if (key != null)
-            await connection.invoke(methodName, projectId, hash, key, repo.getAccessToken());
+            await connection.invoke(methodName, projectId, hash, key, repo.getAccessCode());
         else
-            await connection.invoke(methodName, projectId, hash, repo.getAccessToken());
+            await connection.invoke(methodName, projectId, hash, repo.getAccessCode());
     }
 
     async doDrawingExportJob(projectId, hash, drawingKey, onStart, onComplete, onError) {
@@ -172,7 +172,7 @@ class JobManager {
                 onError(errorData);
         });
 
-        await connection.invoke('CreateDrawingPdfJob', projectId, hash, drawingKey, repo.getAccessToken());
+        await connection.invoke('CreateDrawingPdfJob', projectId, hash, drawingKey, repo.getAccessCode());
     }
 }
 

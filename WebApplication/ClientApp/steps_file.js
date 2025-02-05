@@ -39,7 +39,7 @@ const uploadFileElement = '//input[@id="packageFileInput"]';
 const uploadButton = '//button[@id="upload_button"]';
 const uploadConfirmationDialog = '//p[text()="Upload Finished"]';
 const uploadFailedDialog = '//p[text()="Upload Failed"]';
-const uploadFailLogLink = '//*[contains(@href,"report.txt")]';
+const uploadFailLogLink = '//*[contains(@href,"https://")]';
 const closeButton = '//button[.//*[text() = "Close"]]';
 const okButton = '//button[.//*[text() = "Ok"]]';
 

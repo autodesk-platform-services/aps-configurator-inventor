@@ -68,13 +68,13 @@ export const downloadColumns = [
     }
 ];
 
-// add token to download URLs if necessary
+// add code to download URLs if necessary
 function getDownloadUrls(project) {
 
     const { modelDownloadUrl, bomDownloadUrl } = project;
 
-    const token = repo.getAccessToken();
-    const suffix = token ? "/" + token : "";
+    const code = repo.getAccessCode();
+    const suffix = code ? "/" + code : "";
 
     return {
         modelDownloadUrl: modelDownloadUrl ? modelDownloadUrl + suffix : modelDownloadUrl,

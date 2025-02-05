@@ -38,8 +38,8 @@ export class ForgeView extends Component {
 
     handleScriptLoad() {
 
-        const options = repo.hasAccessToken() ?
-                            { accessToken: repo.getAccessToken() } :
+        const options = repo.hasAccessCode() ?
+                            { accessToken: repo.getAccessCode() } :
                             { env: 'Local' };
 
         Autodesk = window.Autodesk;

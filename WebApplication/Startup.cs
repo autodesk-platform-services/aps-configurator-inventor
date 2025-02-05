@@ -115,6 +115,7 @@ namespace WebApplication
             app.UseSerilogRequestLogging();
 
             app.UseMiddleware<HeaderTokenHandler>();
+            app.UseMiddleware<SvfHeaderTokenHandler>();
 
             app.UseRouting();
 

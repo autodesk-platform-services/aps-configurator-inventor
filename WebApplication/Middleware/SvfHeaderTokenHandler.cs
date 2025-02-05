@@ -1,4 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
 // Written by Autodesk Design Automation team for Inventor
 //
@@ -17,48 +17,46 @@
 /////////////////////////////////////////////////////////////////////
 
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using WebApplication.Services;
+using WebApplication.State;
 
 namespace WebApplication.Middleware
 {
     /// <summary>
-    /// Middleware to extract access code from route parameters.
+    /// Middleware to extract access token from HTTP headers.
+    /// this one is special one for SFV to read 'Bearer', because LMV is sending it to us this way
+    /// it is not real Bearer, because we are sending PKCE CODE from javascript, but LMV resend it as Bearer
     /// </summary>
-    public class RouteTokenHandler
+    public class SvfHeaderTokenHandler
     {
+        private const string BearerPrefix = "Bearer ";
+
         private readonly RequestDelegate _next;
 
-        public RouteTokenHandler(RequestDelegate next)
+        public SvfHeaderTokenHandler(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, ProfileProvider profileProvider, ILogger<RouteTokenHandler> logger)
+        public async Task InvokeAsync(HttpContext context, ProfileProvider profileProvider)
         {
-            string code = context.GetRouteValue("code") as string; // IMPORTANT: parameter name must be in sync with route definition
-            if (!string.IsNullOrEmpty(code))
+            while (context.Request.Headers.TryGetValue(HeaderNames.Authorization, out var values))
             {
-                logger.LogInformation("Extracted code from route");
-                profileProvider.Code = code; // assign Code, Token will be received with code
+                var headerValue = values[0];
+                if (headerValue.Length <= BearerPrefix.Length) break;
+                if (!headerValue.StartsWith(BearerPrefix)) break;
+
+                string code = headerValue.Substring(BearerPrefix.Length);
+                if (string.IsNullOrEmpty(code)) break;
+
+                profileProvider.Code = code;
+                break;
             }
 
             // Call the next delegate/middleware in the pipeline
             await _next(context);
-        }
-    }
-
-    /// <summary>
-    /// Special pipeline to extract code from route values
-    /// </summary>
-    public class RouteTokenPipeline
-    {
-        public void Configure(IApplicationBuilder applicationBuilder)
-        {
-            applicationBuilder.UseMiddleware<RouteTokenHandler>();
         }
     }
 }

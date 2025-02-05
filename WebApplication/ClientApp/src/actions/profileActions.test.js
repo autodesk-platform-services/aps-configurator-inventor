@@ -16,7 +16,7 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-import actionTypes, { detectToken, loadProfile } from "./profileActions";
+import actionTypes, { detectCode, loadProfile } from "./profileActions";
 import notificationTypes from '../actions/notificationActions';
 
 // prepare mock for Repository module
@@ -30,29 +30,29 @@ import thunk from 'redux-thunk';
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-describe('detectToken', () => {
+describe('detectCode', () => {
 
     let store;
     beforeEach(() => {
         store = mockStore({});
-        repoInstance.setAccessToken.mockClear();
-        repoInstance.forgetAccessToken.mockClear();
+        repoInstance.setAccessCode.mockClear();
+        repoInstance.forgetAccessCode.mockClear();
     });
 
     describe('success', () => {
 
         it.each([
-            "#access_token=foo",
-            "#first=second&access_token=foo",
-        ])("should remember access token if it's in the url (%s)",
+            "#code=foo&state=foo2",
+            "#first=second&code=foo&state=foo2",
+        ])("should remember access code if it's in the url (%s)",
         (hashString) => {
 
-            window.location.hash = hashString;
+            window.location.href = hashString;
             const pushStateSpy = jest.spyOn(window.history, 'pushState');
 
-            detectToken()(store.dispatch);
+            detectCode()(store.dispatch);
 
-            expect(repoInstance.setAccessToken).toHaveBeenCalledWith('foo');
+            expect(repoInstance.setAccessCode).toHaveBeenCalledWith({code : 'foo', state: 'foo2'});
             expect(pushStateSpy).toHaveBeenCalled();
 
             pushStateSpy.mockRestore();
@@ -62,36 +62,38 @@ describe('detectToken', () => {
             "",                     // no hash
             "#",                    // hash, but nothing in it
             "#foo=1",               // different parameter
-            "#access_tokennnn=1",   // slightly different name
-            "#access_token=",       // expected parameter, but without value
-        ])('should forget token if not found in url (%s)',
+            "#codennn=1",   // slightly different name
+            "#code=",       // expected parameter, but without value
+            "#state=",       // expected 2nd parameter, but without value
+            "#code=foo&state=", // expected 2nd parameter, but without value
+        ])('should forget code if not found in url (%s)',
         (hashString) => {
 
-            window.location.hash = hashString;
+            window.location.href = hashString;
 
-            detectToken()(store.dispatch);
+            detectCode()(store.dispatch);
 
-            expect(repoInstance.forgetAccessToken).toHaveBeenCalled();
+            expect(repoInstance.forgetAccessCode).toHaveBeenCalled();
         });
     });
 
     describe('failure', () => {
-        it('should log error on failure and forget access token', () => {
+        it('should log error on failure and forget access code', () => {
 
-            // prepare to raise error during token extraction
-            window.location.hash = '#access_token=foo';
-            repoInstance.setAccessToken.mockImplementation(() => { throw new Error('123456'); });
+            // prepare to raise error during code extraction
+            window.location.href = '#code=foo&state=foo2';
+            repoInstance.setAccessCode.mockImplementation(() => { throw new Error('123456'); });
 
             // execute
-            detectToken()(store.dispatch);
+            detectCode()(store.dispatch);
 
-            // check if error is logged and token is forgotten
-            expect(repoInstance.setAccessToken).toHaveBeenCalled();
+            // check if error is logged and code is forgotten
+            expect(repoInstance.setAccessCode).toHaveBeenCalled();
 
             const logAction = store.getActions().find(a => a.type === notificationTypes.ADD_ERROR);
             expect(logAction).toBeDefined();
 
-            expect(repoInstance.forgetAccessToken).toHaveBeenCalled();
+            expect(repoInstance.forgetAccessCode).toHaveBeenCalled();
         });
     });
 });
@@ -122,7 +124,7 @@ describe('loadProfile', () => {
     });
 
     describe('failure', () => {
-        it('should log error on failure and forget access token', async () => {
+        it('should log error on failure and forget access code', async () => {
 
             repoInstance.loadProfile.mockImplementation(() => { throw new Error(); });
 
