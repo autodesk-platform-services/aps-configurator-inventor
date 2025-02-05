@@ -24,7 +24,7 @@ import Toolbar from './components/toolbar';
 import TabsContainer from './components/tabsContainer';
 import ProjectSwitcher from './components/projectSwitcher';
 import { showAdoptWithParamsFailed, fetchShowParametersChanged } from './actions/uiFlagsActions';
-import { detectToken } from './actions/profileActions';
+import { detectCode } from './actions/profileActions';
 import ModalProgress from './components/modalProgress';
 import { adoptWithParamsFailed, embeddedModeEnabled, embeddedModeUrl, adoptWithParamsProgressShowing, errorData } from './reducers/mainReducer';
 import { adoptProjectWithParameters } from './actions/adoptWithParamsActions';
@@ -32,7 +32,7 @@ import { adoptProjectWithParameters } from './actions/adoptWithParamsActions';
 export class App extends Component {
   constructor(props) {
     super(props);
-    props.detectToken();
+    props.detectCode();
   }
   componentDidMount() {
     if (!this.props.embeddedModeEnabled)
@@ -74,6 +74,6 @@ export default connect(function (store) {
     embeddedModeUrl: embeddedModeUrl(store),
     errorData: errorData(store)
   };}, {
-    showAdoptWithParamsFailed, adoptProjectWithParameters, fetchShowParametersChanged, detectToken
+    showAdoptWithParamsFailed, adoptProjectWithParameters, fetchShowParametersChanged, detectCode
 })(App);
 

@@ -37,8 +37,8 @@ export class ForgePdfView extends Component {
 
     async handleScriptLoad() {
 
-        const options = repo.hasAccessToken() ?
-                            { accessToken: repo.getAccessToken() } :
+        const options = repo.hasAccessCode() ?
+                            { accessToken: repo.getAccessCode() } :
                             { env: 'Local' };
 
         Autodesk = window.Autodesk;

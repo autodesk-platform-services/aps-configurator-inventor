@@ -100,7 +100,8 @@ namespace WebApplication.Tests
 
             var fdaClient = new FdaClient(publisher, appBundleZipPathsOptions);
             IOptions<DefaultProjectsConfiguration> defaultProjectsOptions = Options.Create(defaultProjectsConfiguration);
-            var profileProvider = new ProfileProvider(forgeOSS);
+            var profileProvider = new ProfileProvider(forgeOSS,
+                serviceProvider.GetService<TokenService>());
             var bucketKeyProvider = new LoggedInUserBucketKeyProvider(profileProvider, resourceProvider);
             var userResolver = new UserResolver(forgeOSS, bucketKeyProvider, localCache, NullLogger<UserResolver>.Instance, profileProvider);
             var arranger = new Arranger(httpClientFactory, userResolver);

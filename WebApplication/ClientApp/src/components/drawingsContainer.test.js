@@ -60,7 +60,7 @@ const props = {
 describe('DrawingsContainer component', () => {
 
     beforeEach(() => {
-        mockedRepo.getAccessToken.mockClear();
+        mockedRepo.getAccessCode.mockClear();
         getDownloadLinkMock.mockClear();
         fetchDrawingsListMock.mockClear();
         updateActiveDrawingMock.mockClear();

@@ -80,19 +80,19 @@ class Repository {
         return result.data;
     }
 
-    getAccessToken() { return this._accessToken; }
+    getAccessCode() { return this._accessCode; }
 
-    setAccessToken(value) {
-        this._accessToken = value;
-        axios.defaults.headers.common[AuthorizationHeader] = `Bearer ${value}`;
+    setAccessCode(value) {
+        this._accessCode = value['code'];
+        axios.defaults.headers.common[AuthorizationHeader] = `Code ${value['code']}, State ${value['state']}`;
     }
 
-    forgetAccessToken() {
+    forgetAccessCode() {
         delete axios.defaults.headers.common[AuthorizationHeader];
-        delete this._accessToken;
+        delete this._accessCode;
     }
 
-    hasAccessToken() { return !! this._accessToken; }
+    hasAccessCode() { return !! this._accessCode; }
 
     /** Get BOM data */
     async loadBom(bomUrl) {

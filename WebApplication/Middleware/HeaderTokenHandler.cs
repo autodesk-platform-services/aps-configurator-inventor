@@ -25,17 +25,20 @@ using WebApplication.State;
 namespace WebApplication.Middleware
 {
     /// <summary>
-    /// Middleware to extract access token from HTTP headers.
+    /// Middleware to extract access code from HTTP headers.
     /// </summary>
     public class HeaderTokenHandler
     {
-        private const string BearerPrefix = "Bearer ";
+        private const string CodePrefix = "Code ";
+        private const string StatePrefix = ", State ";
 
         private readonly RequestDelegate _next;
+        private readonly TokenService _tokenService;
 
-        public HeaderTokenHandler(RequestDelegate next)
+        public HeaderTokenHandler(RequestDelegate next, TokenService tokenService)
         {
             _next = next;
+            _tokenService = tokenService;
         }
 
         public async Task InvokeAsync(HttpContext context, ProfileProvider profileProvider)
@@ -43,13 +46,18 @@ namespace WebApplication.Middleware
             while (context.Request.Headers.TryGetValue(HeaderNames.Authorization, out var values))
             {
                 var headerValue = values[0];
-                if (headerValue.Length <= BearerPrefix.Length) break;
-                if (! headerValue.StartsWith(BearerPrefix)) break;
+                if (headerValue.Length <= CodePrefix.Length) break;
+                if (! headerValue.StartsWith(CodePrefix)) break;
 
-                string token = headerValue.Substring(BearerPrefix.Length);
-                if (string.IsNullOrEmpty(token)) break;
+                // read 'code' and 'state' value from header
+                // code is for PKCE and state is id of code_verifier
+                var stateIndex = headerValue.IndexOf(StatePrefix);
+                string code = headerValue.Substring(CodePrefix.Length, stateIndex - CodePrefix.Length);
+                string id = headerValue.Substring(stateIndex + StatePrefix.Length);
+                if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(id)) break;
 
-                profileProvider.Token = token;
+                profileProvider.VerifierId = id;
+                profileProvider.Code = code;
                 break;
             }
 

@@ -31,18 +31,18 @@ describe('components', () => {
   describe('App', () => {
     it('Test that app will not call adopt with parameters', () => {
         const fetchShowParametersChanged = jest.fn();
-        const detectToken = jest.fn();
+        const detectCode = jest.fn();
         const adoptProjectWithParameters = jest.fn();
 
         const props = {
           fetchShowParametersChanged,
-          detectToken,
+          detectCode,
           adoptProjectWithParameters,
           embeddedModeEnabled: false
         };
 
         shallow(<App {...props}/>);
-        expect(detectToken).toHaveBeenCalled();
+        expect(detectCode).toHaveBeenCalled();
         expect(fetchShowParametersChanged).toHaveBeenCalled();
         expect(adoptProjectWithParameters).not.toHaveBeenCalled();
     });
@@ -50,12 +50,12 @@ describe('components', () => {
     it('Sets the embedded mode when specified url property', () => {
       const url = "someurl";
       const fetchShowParametersChanged = jest.fn();
-      const detectToken = jest.fn();
+      const detectCode = jest.fn();
       const adoptProjectWithParameters = jest.fn();
 
       const props = {
         fetchShowParametersChanged,
-        detectToken,
+        detectCode,
         adoptProjectWithParameters,
         embeddedModeEnabled: true,
         embeddedModeUrl: url

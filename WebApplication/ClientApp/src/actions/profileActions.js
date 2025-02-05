@@ -26,30 +26,31 @@ const actionTypes = {
 
 export default actionTypes;
 
-/** Extract access token from URL hash */
-function extractToken(urlHash) {
-    const regex = /access_token=([^&]*)/g;
-    const m = regex.exec(urlHash);
-    return m ? m[1] : undefined;
+/** Extract access code from URL */
+function extractAccessCode(url) {
+    const regex = /^(?=.*code=([^&]*)|)(?=.*state=([^&]*)|)/g;
+    const m = regex.exec(url);
+    const code = (m && m[1].length) ? m[1] : undefined;
+    const state = (m && m[2].length) ? m[2] : undefined;
+    return code && state ? { 'code' : m ? m[1] : undefined, 'state' : m ? m[2] : undefined } : undefined;
 }
 
-export const detectToken = () => (dispatch) => {
+export const detectCode = () => (dispatch) => {
     try {
+        const accessCode = extractAccessCode(window.location.href.substring(1));
+        if (accessCode) {
+            dispatch(addLog(`Detected access code`));
+            repo.setAccessCode(accessCode);
 
-        const accessToken = extractToken(window.location.hash.substring(1));
-        if (accessToken) {
-            dispatch(addLog(`Detected access token`));
-            repo.setAccessToken(accessToken);
-
-            // remove token from URL
+            // remove code from URL
             window.history.pushState("", document.title, window.location.pathname);
         } else {
-            dispatch(addLog('Access token is not found'));
-            repo.forgetAccessToken();
+            dispatch(addLog('Access code is not found'));
+            repo.forgetAccessCode();
         }
     } catch (error) {
-        dispatch(addError('Failed to detect token. (' + error + ')'));
-        repo.forgetAccessToken();
+        dispatch(addError('Failed to detect access code. (' + error + ')'));
+        repo.forgetAccessCode();
     }
 };
 
@@ -66,7 +67,7 @@ export const loadProfile = () => async (dispatch) => {
     try {
         const profile = await repo.loadProfile();
         dispatch(addLog('Load profile received'));
-        const isLoggedIn = repo.hasAccessToken();
+        const isLoggedIn = repo.hasAccessCode();
         dispatch(updateProfile(profile, isLoggedIn));
     } catch (error) {
         if (error.response && error.response.status === 403) {

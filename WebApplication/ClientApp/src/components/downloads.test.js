@@ -39,7 +39,7 @@ const props = {
 describe('Downloads components', () => {
 
   beforeEach(() => {
-    mockedRepo.getAccessToken.mockClear();
+    mockedRepo.getAccessCode.mockClear();
   });
 
   describe('Base Table', () => {
@@ -126,10 +126,10 @@ describe('Downloads components', () => {
       expect(hyperlinks.length).toEqual(0);
     });
 
-    it('should inject token for download URLs', () => {
+    it('should inject code for download URLs', () => {
 
-      const fakeToken = '1234567890';
-      mockedRepo.getAccessToken.mockReturnValue(fakeToken);
+      const fakeCode = '1234567890';
+      mockedRepo.getAccessCode.mockReturnValue(fakeCode);
 
       const wrapper = shallow(<Downloads { ...props } />);
       const as = wrapper.find('AutoResizer');
@@ -137,7 +137,7 @@ describe('Downloads components', () => {
       const btdata = bt.prop('data');
       const iam = btdata[0];
       const iamlink = shallow(iam.link);
-      expect(iamlink.prop('href').endsWith(fakeToken)).toEqual(true);
+      expect(iamlink.prop('href').endsWith(fakeCode)).toEqual(true);
     });
   });
 
