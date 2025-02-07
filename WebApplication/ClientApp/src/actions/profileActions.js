@@ -30,8 +30,8 @@ export default actionTypes;
 function extractAccessCode(url) {
     const regex = /^(?=.*code=([^&]*)|)(?=.*state=([^&]*)|)/g;
     const m = regex.exec(url);
-    const code = (m && m[1].length) ? m[1] : undefined;
-    const state = (m && m[2].length) ? m[2] : undefined;
+    const code = (m && m[1]?.length) ? m[1] : undefined;
+    const state = (m && m[2]?.length) ? m[2] : undefined;
     return code && state ? { 'code' : m ? m[1] : undefined, 'state' : m ? m[2] : undefined } : undefined;
 }
 
