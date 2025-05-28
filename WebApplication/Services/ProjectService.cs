@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
+using Autodesk.Oss;
+using Autodesk.Oss.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -32,7 +33,7 @@ namespace WebApplication.Services
             _dtoGenerator = dtoGenerator;
 
             _waitForBucketPolicy = Policy
-                .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status404NotFound)
+                .Handle<OssApiException>(e => e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(
                     retryCount: 4,
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -92,7 +93,7 @@ namespace WebApplication.Services
 
             // OSS bucket might be not ready yet, so repeat attempts
             string signedUrl = await _waitForBucketPolicy.ExecuteAsync(async () =>
-                await bucket.CreateSignedUrlAsync(project.OSSSourceModel, ObjectAccess.ReadWrite));
+                await bucket.CreateSignedUrlAsync(project.OSSSourceModel, Access.ReadWrite));
 
             // TransferData from outside URL to temporary oss url
             await _projectWork.FileTransferAsync(projectUrl, signedUrl);

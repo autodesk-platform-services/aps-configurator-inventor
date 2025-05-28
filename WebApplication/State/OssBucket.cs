@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
-using Autodesk.Forge.Model;
+using Autodesk.Oss;
+using Autodesk.Oss.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using WebApplication.Services;
@@ -120,7 +120,7 @@ namespace WebApplication.State
         /// <param name="access">Requested access to the object.</param>
         /// <param name="minutesExpiration">Minutes while the URL is valid. Default is 30 minutes.</param>
         /// <returns>Signed URL</returns>
-        public async Task<string> CreateSignedUrlAsync(string objectName, ObjectAccess access = ObjectAccess.Read, int minutesExpiration = 30)
+        public async Task<string> CreateSignedUrlAsync(string objectName, Access access = Access.Read, int minutesExpiration = 30)
         {
             return await _forgeOSS.CreateSignedUrlAsync(BucketKey, objectName, access, minutesExpiration);
         }
@@ -164,7 +164,7 @@ namespace WebApplication.State
             {
                 await _forgeOSS.RenameObjectAsync(BucketKey, oldName, newName);
             }
-            catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 if(ignoreNotExisting)
                 {
@@ -199,20 +199,19 @@ namespace WebApplication.State
             await _forgeOSS.UploadObjectAsync(BucketKey, objectName, stream);
         }
 
-        public async Task<ApiResponse<dynamic>> GetObjectAsync(string objectName)
+        public async Task<Stream> GetObjectAsync(string objectName)
         {
             return await _forgeOSS.GetObjectAsync(BucketKey, objectName);
-        }        
-        
+        }
+
         /// <summary>
         /// Load JSON from OSS and deserialize it to <see cref="T"/> instance.
         /// </summary>
         public async Task<T> DeserializeAsync<T>(string objectName)
         {
-            var response = await _forgeOSS.GetObjectAsync(BucketKey, objectName);
-            if (response == null) return default;
+            var objectStream = await _forgeOSS.GetObjectAsync(BucketKey, objectName);
+            if (objectStream == null) return default;
 
-            await using Stream objectStream = response.Data;
             return await JsonSerializer.DeserializeAsync<T>(objectStream);
         }
 
@@ -226,7 +225,7 @@ namespace WebApplication.State
                 await _forgeOSS.GetObjectDetailsAsync(BucketKey, objectName); // don't care about result
                 return true;
             }
-            catch (ApiException ex) when (ex.ErrorCode == 404)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 // the file is not found. Just swallow the exception
             }
@@ -241,7 +240,7 @@ namespace WebApplication.State
             {
                 url = await CreateSignedUrlAsync(objectName);
             }
-            catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 // the file does not exist
             }

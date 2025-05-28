@@ -19,7 +19,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
+using Autodesk.Oss;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.State;
 using WebApplication.Utilities;
@@ -42,24 +42,21 @@ namespace WebApplication.Controllers
         {
             bool result = true;
 
-            ApiResponse<dynamic> ossObjectResponse = null;
+            Stream objectStream = null;
 
             try
             {
                 var bucket = await _userResolver.GetBucketAsync();
-                ossObjectResponse = await bucket.GetObjectAsync(ONC.ShowParametersChanged);
+                objectStream = await bucket.GetObjectAsync(ONC.ShowParametersChanged);
             } 
-            catch (ApiException ex) when (ex.ErrorCode == 404)
+            catch (OssApiException ex) when (ex.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 // the file is not found. Just swallow the exception
             }
 
-            if(ossObjectResponse != null)
+            if(objectStream != null)
             {
-                using (Stream objectStream = ossObjectResponse.Data)
-                {
-                    result = await JsonSerializer.DeserializeAsync<bool>(objectStream);
-                }
+                result = await JsonSerializer.DeserializeAsync<bool>(objectStream);
             }
 
             return result;

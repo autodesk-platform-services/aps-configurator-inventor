@@ -16,7 +16,7 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-using Autodesk.Forge.Model;
+using Autodesk.Oss.Model;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;

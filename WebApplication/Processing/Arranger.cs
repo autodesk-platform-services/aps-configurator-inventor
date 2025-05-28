@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Autodesk.Oss.Model;
 using Shared;
 using WebApplication.Definitions;
 using WebApplication.Services;
@@ -71,14 +72,14 @@ namespace WebApplication.Processing
         {
             var bucket = await _userResolver.GetBucketAsync();
 
-            var urls = await Task.WhenAll(bucket.CreateSignedUrlAsync(Thumbnail, ObjectAccess.Write), 
-                                            bucket.CreateSignedUrlAsync(SVF, ObjectAccess.Write), 
-                                            bucket.CreateSignedUrlAsync(Parameters, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(OutputModelIAM, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(OutputModelIPT, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(BomJson, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(DrawingsList, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(AdoptMessages, ObjectAccess.Write));
+            var urls = await Task.WhenAll(bucket.CreateSignedUrlAsync(Thumbnail, Access.Write),
+                                            bucket.CreateSignedUrlAsync(SVF, Access.Write),
+                                            bucket.CreateSignedUrlAsync(Parameters, Access.Write),
+                                            bucket.CreateSignedUrlAsync(OutputModelIAM, Access.Write),
+                                            bucket.CreateSignedUrlAsync(OutputModelIPT, Access.Write),
+                                            bucket.CreateSignedUrlAsync(BomJson, Access.Write),
+                                            bucket.CreateSignedUrlAsync(DrawingsList, Access.Write),
+                                            bucket.CreateSignedUrlAsync(AdoptMessages, Access.Write));
 
             return new AdoptionData
                     {
@@ -106,12 +107,12 @@ namespace WebApplication.Processing
             var bucket = await _userResolver.GetBucketAsync();
 
             var urls = await Task.WhenAll(
-                                            bucket.CreateSignedUrlAsync(OutputModelIAM, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(OutputModelIPT, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(SVF, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(Parameters, ObjectAccess.Write),
-                                            bucket.CreateSignedUrlAsync(InputParams, ObjectAccess.ReadWrite),
-                                            bucket.CreateSignedUrlAsync(BomJson, ObjectAccess.Write)
+                                            bucket.CreateSignedUrlAsync(OutputModelIAM, Access.Write),
+                                            bucket.CreateSignedUrlAsync(OutputModelIPT, Access.Write),
+                                            bucket.CreateSignedUrlAsync(SVF, Access.Write),
+                                            bucket.CreateSignedUrlAsync(Parameters, Access.Write),
+                                            bucket.CreateSignedUrlAsync(InputParams, Access.ReadWrite),
+                                            bucket.CreateSignedUrlAsync(BomJson, Access.Write)
                                             );
 
             await bucket.UploadAsJsonAsync(InputParams, parameters);
@@ -191,7 +192,7 @@ namespace WebApplication.Processing
         internal async Task<ProcessingArgs> ForDrawingAsync(string inputDocUrl, string topLevelAssembly)
         {
             var bucket = await _userResolver.GetBucketAsync();
-            var url = await bucket.CreateSignedUrlAsync(OutputDrawing, ObjectAccess.ReadWrite);
+            var url = await bucket.CreateSignedUrlAsync(OutputDrawing, Access.ReadWrite);
 
             return new ProcessingArgs
             {
@@ -204,7 +205,7 @@ namespace WebApplication.Processing
         internal async Task<ProcessingArgs> ForRfaAsync(string inputDocUrl, string topLevelAssembly)
         {
             var bucket = await _userResolver.GetBucketAsync();
-            var rfaUrl = await bucket.CreateSignedUrlAsync(OutputRFA, ObjectAccess.Write);
+            var rfaUrl = await bucket.CreateSignedUrlAsync(OutputRFA, Access.Write);
 
             return new ProcessingArgs
             {
@@ -217,7 +218,7 @@ namespace WebApplication.Processing
         internal async Task<ProcessingArgs> ForDrawingPdfAsync(string inputDocUrl, string drawingKey, string topLevelAssembly)
         {
             var bucket = await _userResolver.GetBucketAsync();
-            var drawingPdfUrl = await bucket.CreateSignedUrlAsync(OutputDrawingPdf, ObjectAccess.Write);
+            var drawingPdfUrl = await bucket.CreateSignedUrlAsync(OutputDrawingPdf, Access.Write);
 
             return new DrawingPdfData
             {

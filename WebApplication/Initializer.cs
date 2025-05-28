@@ -20,8 +20,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
-using Microsoft.AspNetCore.Http;
+using Autodesk.Oss;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -80,7 +79,7 @@ namespace WebApplication
 
             // OSS bucket might fail to create, so repeat attempts
             var createBucketPolicy = Policy
-                .Handle<ApiException>()
+                .Handle<OssApiException>()
                 .WaitAndRetryAsync(
                     retryCount: 4,
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -117,7 +116,7 @@ namespace WebApplication
                 // We need to wait because the server needs some time to settle down. If we try to create the bucket again immediately we'll get a conflict error.
                 await Task.Delay(4000);
             }
-            catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 _logger.LogInformation($"Nothing to delete because bucket {_bucket.BucketKey} does not exist yet");
             }

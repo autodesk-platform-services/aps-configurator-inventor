@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
+using Autodesk.Oss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using WebApplication.Middleware;
@@ -68,7 +68,7 @@ namespace WebApplication.State
                 {
                     await bucket.CreateAsync();
                 }
-                catch (ApiException e) when(e.ErrorCode == StatusCodes.Status409Conflict)
+                catch (OssApiException e) when(e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
                     // means - the bucket already exists
                 }

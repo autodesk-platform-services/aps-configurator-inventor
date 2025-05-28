@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
 using Autodesk.Forge.DesignAutomation.Model;
+using Autodesk.Oss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared;
@@ -202,10 +202,9 @@ namespace WebApplication.Processing
             {
                 bool generated = false;
 
-                ApiResponse<dynamic> ossObjectResponse = await bucket.GetObjectAsync(ossNames.DrawingPdf(drawingIdx));
-                if (ossObjectResponse != null)
+                Stream objectStream = await bucket.GetObjectAsync(ossNames.DrawingPdf(drawingIdx));
+                if (objectStream != null)
                 {
-                    await using Stream objectStream = ossObjectResponse.Data;
 
                     // zero length means that there is nothing to generate, but processed and do not continue
                     generated = objectStream.Length > 0;
@@ -221,7 +220,7 @@ namespace WebApplication.Processing
                     return (null, drawingIdx, null);
                 }
             }
-            catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 // the file does not exist, so just swallow
             }
@@ -251,7 +250,7 @@ namespace WebApplication.Processing
                 _logger.LogInformation($"Drawing PDF for hash {hash} is generated");
                 return (FdaStatsDTO.All(result.Stats), drawingIdx, result.ReportUrl);
             }
-            catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 // the file does not exist after generating drawing, so just mark with zero length that we already processed it
                 await bucket.UploadObjectAsync(ossNames.DrawingPdf(drawingIdx), new MemoryStream(0));
