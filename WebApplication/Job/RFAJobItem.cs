@@ -37,7 +37,7 @@ namespace WebApplication.Job
 
         public override async Task ProcessJobAsync(IResultSender resultSender)
         {
-            using var scope = Logger.BeginScope("RFA generation ({Id})");
+            using var scope = Logger.BeginScope($"RFA generation ({Id})");
 
             Logger.LogInformation($"ProcessJob (RFA) {Id} for project {ProjectId} started.");
 

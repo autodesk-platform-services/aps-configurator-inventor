@@ -52,7 +52,7 @@ namespace WebApplication.Tests
                 .AddJsonFile("appsettings.json", false)
                 .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
-                .AddForgeAlternativeEnvironmentVariables()
+                .AddAPSAlternativeEnvironmentVariables()
                 .Build();
 
             IServiceCollection services = new ServiceCollection();

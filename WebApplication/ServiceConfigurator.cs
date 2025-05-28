@@ -47,7 +47,7 @@ namespace WebApplication
                 .AddJsonOptions(options =>
                                 {
                                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                                 });
 
             services.AddSignalR(o =>

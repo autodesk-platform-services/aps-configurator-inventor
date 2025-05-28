@@ -42,7 +42,7 @@ namespace WebApplication
                 {
                     configBuilder
                         .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false)
-                        .AddForgeAlternativeEnvironmentVariables();
+                        .AddAPSAlternativeEnvironmentVariables();
                 })
                 .UseSerilog((context, logConfig) =>
                 {

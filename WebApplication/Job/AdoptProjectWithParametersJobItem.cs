@@ -41,7 +41,7 @@ namespace WebApplication.Job
 
         public override async Task ProcessJobAsync(IResultSender resultSender)
         {
-            using var scope = Logger.BeginScope("Project Adoption ({Id})");
+            using var scope = Logger.BeginScope($"Project Adoption ({Id})");
 
                 var payload = await _adoptProjectWithParametersPayloadProvider.GetParametersAsync(_payloadUrl);
 
