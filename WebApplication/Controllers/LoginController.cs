@@ -31,6 +31,7 @@ using WebApplication.Middleware;
 using WebApplication.Services;
 using WebApplication.State;
 using WebApplication.Utilities;
+using Autodesk.Authentication.Model;
 
 namespace WebApplication.Controllers
 {
@@ -63,6 +64,7 @@ namespace WebApplication.Controllers
         public RedirectResult Get()
         {
             _logger.LogInformation("Authorize against the Oxygen");
+
 
             var callbackUrl = _tokenService.GetCallbackUrl();
             var encodedHost = HttpUtility.UrlEncode(callbackUrl);
@@ -107,16 +109,16 @@ namespace WebApplication.Controllers
             _logger.LogInformation("Get profile");
             if (_profileProvider.IsAuthenticated)
             {
-                dynamic profile = await _profileProvider.GetProfileAsync();
+                UserInfo profile = await _profileProvider.GetProfileAsync();
                 if (_inviteOnlyModeConfig.Enabled)
                 {
                     var inviteOnlyChecker = new InviteOnlyChecker(_inviteOnlyModeConfig);
-                    if (!profile.emailVerified || !inviteOnlyChecker.IsInvited(profile.emailId))
+                    if (!profile.EmailVerified == true || !inviteOnlyChecker.IsInvited(profile.Email))
                     {
                         return StatusCode(403);
                     }
                 }
-                return new ProfileDTO { Name = profile.firstName + " " + profile.lastName, AvatarUrl = profile.profileImages.sizeX40 };
+                return new ProfileDTO { Name = profile.Name, AvatarUrl = profile.Thumbnails["sizeX40"] };
             }
             else
             {

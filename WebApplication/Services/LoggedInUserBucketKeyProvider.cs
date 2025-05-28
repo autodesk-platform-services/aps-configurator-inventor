@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Autodesk.Authentication.Model;
 using Autodesk.Forge.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -26,8 +27,8 @@ namespace WebApplication.Services
         {
             if (!_profileProvider.IsAuthenticated) return AnonymousBucketKey;
 
-            dynamic profile = await _profileProvider.GetProfileAsync();
-            var userId = profile.userId;
+            UserInfo profile = await _profileProvider.GetProfileAsync();
+            var userId = profile.Sub;
 
             return _resourceProvider.LoggedUserBucketKey(userId);
         }
