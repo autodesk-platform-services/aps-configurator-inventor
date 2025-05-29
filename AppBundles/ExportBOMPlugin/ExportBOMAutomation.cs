@@ -147,9 +147,8 @@ namespace ExportBOMPlugin
                 BOM bom = assemblyComponentDef.BOM;
                 BOMViews bomViews = bom.BOMViews;
 
-                // enable structured view in case of iAssembly
-                if (assemblyComponentDef.IsiAssemblyFactory && bom.StructuredViewEnabled == false)
-                    bom.StructuredViewEnabled = true;
+                // make sure Structured view is enabled
+                bom.StructuredViewEnabled = true;
 
                 BOMView structureView = bomViews["Structured"];
 
