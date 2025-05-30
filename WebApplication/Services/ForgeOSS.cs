@@ -82,8 +82,6 @@ namespace WebApplication.Services
             _logger = logger;
             Configuration = optionsAccessor.Value.Validate();
 
-            string apiBaseUrl = Configuration.AuthenticationAddress.GetLeftPart(System.UriPartial.Authority);
-
             RefreshApiToken();
 
             // create policy to refresh API token on expiration (401 error code)
