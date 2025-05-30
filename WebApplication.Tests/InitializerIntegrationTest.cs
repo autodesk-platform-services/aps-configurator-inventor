@@ -35,7 +35,7 @@ namespace WebApplication.Tests
 
         private static readonly DefaultProjectsConfiguration defaultProjectsConfiguration = new DefaultProjectsConfiguration
         {
-            Projects = new[] { new DefaultProjectConfiguration { Url = testZippedIamUrl, TopLevelAssembly = testIamPathInZip, Name = "Basic2025" } }
+            Projects = new[] { new DefaultProjectConfiguration { Url = testZippedIamUrl, TopLevelAssembly = testIamPathInZip, Name = "Basic" } }
         };
 
         public InitializerIntegrationTest() : base(defaultProjectsConfiguration)
