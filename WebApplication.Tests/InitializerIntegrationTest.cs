@@ -30,12 +30,12 @@ namespace WebApplication.Tests
     [Collection("IntegrationTests1")]
     public class InitializerIntegrationTest : InitializerTestBase, IAsyncLifetime
     {
-        const string testZippedIamUrl = "https://testipt.s3-us-west-2.amazonaws.com/Basic.zip";
+        const string testZippedIamUrl = "https://testipt.s3-us-west-2.amazonaws.com/Basic2025.zip";
         const string testIamPathInZip = "iLogicBasic1.iam";
 
         private static readonly DefaultProjectsConfiguration defaultProjectsConfiguration = new DefaultProjectsConfiguration
         {
-            Projects = new[] { new DefaultProjectConfiguration { Url = testZippedIamUrl, TopLevelAssembly = testIamPathInZip, Name = "Basic" } }
+            Projects = new[] { new DefaultProjectConfiguration { Url = testZippedIamUrl, TopLevelAssembly = testIamPathInZip, Name = "Basic2025" } }
         };
 
         public InitializerIntegrationTest() : base(defaultProjectsConfiguration)

@@ -78,7 +78,8 @@ namespace ExportBOMPlugin
                         }
                         catch (Exception e)
                         {
-                            LogError("Failed to extract BOM. " + e.ToString());
+                            LogError("Failed to extract BOM.");
+                            throw e;
                         }
                         break;
 
