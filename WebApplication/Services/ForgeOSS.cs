@@ -46,6 +46,7 @@ namespace WebApplication.Services
     /// </summary>
     public class ForgeOSS : IForgeOSS
     {
+        private SDKManager sdkManager;
         private OssClient ossClient;
         private AuthenticationClient authenticationClient;
 
@@ -73,8 +74,7 @@ namespace WebApplication.Services
         /// </summary>
         public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger)
         {
-
-            var sdkManager = SdkManagerBuilder.Create().Build();
+            sdkManager = SdkManagerBuilder.Create().Build();
             ossClient = new OssClient(sdkManager);
             authenticationClient = new AuthenticationClient(sdkManager);
 
@@ -130,9 +130,9 @@ namespace WebApplication.Services
             string startAt = null; // next page pointer
 
             do {
-                var tempObjects = await WithOssRetryPolicy(async token =>
+                var tempObjects = await WithOssClientAsync(async ossClient =>
                 {
-                    var tempObjects = await ossClient.GetObjectsAsync(bucketKey, PageSize, beginsWith, startAt, token);
+                    var tempObjects = await ossClient.GetObjectsAsync(bucketKey, PageSize, beginsWith, startAt);
                     return tempObjects;
                 });
 
@@ -156,9 +156,9 @@ namespace WebApplication.Services
 
             do
             {
-                var bucketList = await WithOssRetryPolicy(async token =>
+                var bucketList = await WithOssClientAsync(async ossClient =>
                 {
-                    return await ossClient.GetBucketsAsync(/* use default (US region) */ null, PageSize, startAt, token);
+                    return await ossClient.GetBucketsAsync(/* use default (US region) */ null, PageSize, startAt);
                 });
 
                 foreach(var bucket in bucketList.Items)
@@ -179,7 +179,7 @@ namespace WebApplication.Services
       /// <param name="bucketKey">The bucket name.</param>
       public async Task CreateBucketAsync(string bucketKey)
         {
-            await WithOssRetryPolicy(async token =>
+            await WithOssClientAsync(async ossClient =>
             {
                 var payload = new CreateBucketsPayload
                 {
@@ -188,14 +188,14 @@ namespace WebApplication.Services
                     PolicyKey = PolicyKey.Persistent
                 };
 
-                await ossClient.CreateBucketAsync(Region.US, payload, token);
+                await ossClient.CreateBucketAsync(Region.US, payload);
             });
         }
 
         public async Task DeleteBucketAsync(string bucketKey)
         {
-            await WithOssRetryPolicy(async token =>
-                await ossClient.DeleteBucketAsync(bucketKey, token)
+            await WithOssClientAsync(async ossClient =>
+                await ossClient.DeleteBucketAsync(bucketKey)
             );
         }
 
@@ -220,7 +220,7 @@ namespace WebApplication.Services
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithOssRetryPolicy(async token => await ossClient.UploadObjectAsync(bucketKey, objectName, stream, accessToken: token));
+            await WithOssClientAsync(async ossClient => await ossClient.UploadObjectAsync(bucketKey, objectName, stream));
         }
 
         /// <summary>
@@ -232,13 +232,13 @@ namespace WebApplication.Services
         public async Task RenameObjectAsync(string bucketKey, string oldName, string newName)
         {
             // OSS does not support renaming, so emulate it with more ineffective operations
-            await WithOssRetryPolicy(async token => await ossClient.CopyToAsync(bucketKey, oldName, newName, token));
-            await WithOssRetryPolicy(async token => await ossClient.DeleteObjectAsync(bucketKey, oldName, token));
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, oldName, newName));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, oldName));
         }
 
         public async Task<Stream> GetObjectAsync(string bucketKey, string objectName)
         {
-            Stream stream = await WithOssRetryPolicy(async token => await ossClient.DownloadObjectAsync(bucketKey, objectName, accessToken: token));
+            Stream stream = await WithOssClientAsync(async ossClient => await ossClient.DownloadObjectAsync(bucketKey, objectName));
             stream.Position = 0; // The returned stream doesn't start from zero. Start from zero.
             return stream;
         }
@@ -248,7 +248,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            await WithOssRetryPolicy(async token => await ossClient.CopyToAsync(bucketKey, fromName, toName, token));
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, fromName, toName));
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task DeleteAsync(string bucketKey, string objectName)
         {
-            await WithOssRetryPolicy(async token => await ossClient.DeleteObjectAsync(bucketKey, objectName, token));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, objectName));
         }
 
         /// <summary>
@@ -284,26 +284,30 @@ namespace WebApplication.Services
         }
 
         /// <summary>
-        /// Run action against Objects OSS API.
+        /// Run action against OSS Client.
         /// </summary>
         /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task WithOssRetryPolicy(Func<string, Task> action)
+        private async Task WithOssClientAsync(Func<OssClient, Task> action)
         {
             await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                await action(await TwoLeggedAccessToken);
+                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
+                ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
+                await action(ossClient);
             });
         }
 
         /// <summary>
-        /// Run action against Objects OSS API.
+        /// Run action against OSS Client.
         /// </summary>
         /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task<T> WithOssRetryPolicy<T>(Func<string, Task<T>> action)
+        private async Task<T> WithOssClientAsync<T>(Func<OssClient, Task<T>> action)
         {
             return await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                return await action(await TwoLeggedAccessToken);
+                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
+                ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
+                return await action(ossClient);
             });
         }
 
@@ -332,7 +336,7 @@ namespace WebApplication.Services
                 SingleUse = false
             };
 
-            CreateObjectSigned result = await WithOssRetryPolicy(async token => await ossClient.CreateSignedResourceAsync(bucketKey, objectName, createSignedResource, access, accessToken: token));
+            CreateObjectSigned result = await WithOssClientAsync(async ossClient => await ossClient.CreateSignedResourceAsync(bucketKey, objectName, createSignedResource, access));
             return result.SignedUrl;
         }
     }
