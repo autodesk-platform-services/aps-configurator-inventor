@@ -105,7 +105,7 @@ module.exports = function() {
       this.clickToAuthorizationButton();
 
       // check it is Sign-In page
-      this.seeTitleEquals('Sign in');
+      this.seeTitleEquals('Sign in - Autodesk');
       this.waitForElement(inputUserName, 10);
 
       // wait before filling in the text box
