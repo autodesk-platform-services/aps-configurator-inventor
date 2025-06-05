@@ -13,6 +13,9 @@ Write-Output "Waiting for server to initialize"
 ..\cicd\waitForServer.ps1
 Write-Output "**** running the UI tests ****"
 Set-Location ClientApp
+if (Test-Path -Path output) {
+    rmdir output -Recurse
+}
 mkdir output
 try {
     npx codeceptjs run $env:UITestParams
