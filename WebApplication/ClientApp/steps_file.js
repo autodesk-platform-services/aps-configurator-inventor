@@ -62,7 +62,10 @@ module.exports = function() {
   const authorizationButton = '.auth-button';
   const loginName = process.env.SDRA_USERNAME;
   const password = process.env.SDRA_PASSWORD;
+  const trustToken = process.env.TRUST_TOKEN;
   const allowButton = '#allow_btn';
+  const idp_opt_in_url = 'https://accounts.autodesk.com/idp-opt-in';
+  const captcha_bypass_url = `https://idp.auth.autodesk.com/accounts/v1/hcaptcha/bypass?trustToken=${trustToken}`;
 
   return actor({
 
@@ -101,6 +104,14 @@ module.exports = function() {
     },
     async signIn(){
      // we use Autodesk Account credentials //https://accounts.autodesk.com/
+
+      this.usePlaywrightTo('goto', async ({ context }) => {
+        // Opt into a new sign-in because of captcha issues in old sign-in
+        await context.request.get(idp_opt_in_url);
+
+        // Use a trust token to bypass captcha
+        await context.request.get(captcha_bypass_url);
+      });
 
       this.clickToAuthorizationButton();
 
