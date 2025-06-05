@@ -20,8 +20,8 @@
 /* eslint-disable no-undef */
 
 const trustToken = process.env.TRUST_TOKEN;
-const idp_opt_in_url = 'https://accounts.autodesk.com/idp-opt-in'
-const captcha_bypass_url = `https://idp.auth.autodesk.com/accounts/v1/hcaptcha/bypass?trustToken=${trustToken}`
+const idp_opt_in_url = 'https://accounts.autodesk.com/idp-opt-in';
+const captcha_bypass_url = `https://idp.auth.autodesk.com/accounts/v1/hcaptcha/bypass?trustToken=${trustToken}`;
 
 Feature('Authentication');
 
