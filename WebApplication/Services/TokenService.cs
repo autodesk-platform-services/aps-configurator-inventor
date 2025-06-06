@@ -50,7 +50,7 @@ namespace WebApplication.Services
             var sdkManager = SdkManagerBuilder.Create().Build();
 
             // Set environment from AuthenticationAddress
-            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsolutePath);
+            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsoluteUri);
 
             authenticationClient = new AuthenticationClient(sdkManager);
         }
