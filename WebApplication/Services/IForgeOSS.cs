@@ -81,7 +81,7 @@ namespace WebApplication.Services
         /// Get profile for the user with the access token.
         /// </summary>
         /// <param name="token">Oxygen access token.</param>
-        /// <returns>Dynamic object with User Profile</returns>
+        /// <returns>Object with User Info</returns>
         /// <remarks>
         /// User Profile fields: https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
         /// </remarks>

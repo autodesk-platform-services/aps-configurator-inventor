@@ -110,18 +110,6 @@ namespace WebApplication.Services
                 .WrapAsync(waitForObjectPolicy);
         }
 
-        public static bool PropertyExists(dynamic obj, string name)
-        {
-            if (obj == null) return false;
-            if (obj is IDictionary<string, object> dict)
-            {
-                return dict.ContainsKey(name);
-            }
-
-            var property = obj.GetType().GetProperty(name);
-            return property != null;
-        }
-
         public async Task<List<ObjectDetails>> GetBucketObjectsAsync(string bucketKey, string beginsWith = null)
         {
             BucketObjects objects = new BucketObjects();
@@ -274,9 +262,9 @@ namespace WebApplication.Services
         /// Get profile for the user with the access token.
         /// </summary>
         /// <param name="token">Oxygen access token.</param>
-        /// <returns>Dynamic object with User Profile</returns>
+        /// <returns>Object with User Info</returns>
         /// <remarks>
-        /// User Profile fields: https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
+        /// User Profile fields: https://aps.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
         /// </remarks>
         public async Task<UserInfo> GetProfileAsync(string token)
         {

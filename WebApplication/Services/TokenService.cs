@@ -108,7 +108,8 @@ namespace WebApplication.Services
 
         private void CleanupExpiredTokens()
         {
-            List<dynamic> codesForDelete = new List<dynamic>();
+            List<KeyValuePair<String, KeyValuePair<DateTime, Lazy<Task<ThreeLeggedToken>>>>> codesForDelete =
+                new List<KeyValuePair<String, KeyValuePair<DateTime, Lazy<Task<ThreeLeggedToken>>>>>();
             foreach (var item in codeToToken)
             {
                 var tokenTime = item.Value.Key;
