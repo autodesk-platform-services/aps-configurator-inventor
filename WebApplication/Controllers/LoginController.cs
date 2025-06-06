@@ -77,7 +77,6 @@ namespace WebApplication.Controllers
         {
             _logger.LogInformation("Authorize against the Oxygen");
 
-
             var callbackUrl = _tokenService.GetCallbackUrl();
 
             // prepare scope
