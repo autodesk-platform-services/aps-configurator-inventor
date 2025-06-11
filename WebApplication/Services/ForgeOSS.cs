@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Autodesk.Authentication;
 using Autodesk.Authentication.Model;
 using Autodesk.Forge.Core;
@@ -203,12 +204,12 @@ namespace WebApplication.Services
 
         public async Task<ObjectFullDetails> GetObjectDetailsAsync(string bucketKey, string objectName)
         {
-            return await ossClient.GetObjectDetailsAsync(bucketKey, objectName, accessToken: await TwoLeggedAccessToken);
+            return await ossClient.GetObjectDetailsAsync(bucketKey, EncodedObjectName(objectName), accessToken: await TwoLeggedAccessToken);
         }
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithOssClientAsync(async ossClient => await ossClient.UploadObjectAsync(bucketKey, objectName, stream));
+            await WithOssClientAsync(async ossClient => await ossClient.UploadObjectAsync(bucketKey, EncodedObjectName(objectName), stream));
         }
 
         /// <summary>
@@ -220,13 +221,13 @@ namespace WebApplication.Services
         public async Task RenameObjectAsync(string bucketKey, string oldName, string newName)
         {
             // OSS does not support renaming, so emulate it with more ineffective operations
-            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, oldName, newName));
-            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, oldName));
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, EncodedObjectName(oldName), EncodedObjectName(newName)));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, EncodedObjectName(oldName)));
         }
 
         public async Task<Stream> GetObjectAsync(string bucketKey, string objectName)
         {
-            Stream stream = await WithOssClientAsync(async ossClient => await ossClient.DownloadObjectAsync(bucketKey, objectName));
+            Stream stream = await WithOssClientAsync(async ossClient => await ossClient.DownloadObjectAsync(bucketKey, EncodedObjectName(objectName)));
             stream.Position = 0; // The returned stream doesn't start from zero. Start from zero.
             return stream;
         }
@@ -236,7 +237,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, fromName, toName));
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, EncodedObjectName(fromName), EncodedObjectName(toName)));
         }
 
         /// <summary>
@@ -244,7 +245,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task DeleteAsync(string bucketKey, string objectName)
         {
-            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, objectName));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, EncodedObjectName(objectName)));
         }
 
         /// <summary>
@@ -324,8 +325,17 @@ namespace WebApplication.Services
                 SingleUse = false
             };
 
-            CreateObjectSigned result = await WithOssClientAsync(async ossClient => await ossClient.CreateSignedResourceAsync(bucketKey, objectName, createSignedResource, access));
+            CreateObjectSigned result = await WithOssClientAsync(async ossClient => await ossClient.CreateSignedResourceAsync(bucketKey, EncodedObjectName(objectName), createSignedResource, access));
             return result.SignedUrl;
+        }
+
+        /// <summary>
+        /// Encode object name.
+        /// New SDK expects encoded names.
+        /// </summary>
+        private string EncodedObjectName(string objectName)
+        {
+            return HttpUtility.UrlEncode(objectName);
         }
     }
 }

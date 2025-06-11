@@ -90,7 +90,7 @@ namespace WebApplication.Utilities
         /// <summary>
         /// Separator to fake directories in OSS filename.
         /// </summary>
-        private const string OssSeparator = "-"; // This must stay private
+        private const string OssSeparator = "/"; // This must stay private
 
         public const string ProjectsFolder = "projects";
         public const string ShowParametersChanged = "showparameterschanged.json";
