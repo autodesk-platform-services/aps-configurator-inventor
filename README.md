@@ -176,7 +176,6 @@ We are using npm.
 * For CSS: `npm run lint-css`
 
 ### Deploy
-* For an advanced example of CI/CD on AWS, see [AWS-CICD](AWS-CICD/README.md)
 * For a simple method of deploying to Azure, see [Publish a Web app to Azure App Service using Visual Studio](https://docs.microsoft.com/en-us/visualstudio/deployment/quickstart-deploy-to-azure?view=vs-2019)
     * First change `WebApplication.Program.cs` by removing the `UseKestrel()` statement
     * You will need to change the callback in your APS app to match the URL you deploy to.
