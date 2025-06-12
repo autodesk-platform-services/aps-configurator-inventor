@@ -119,15 +119,11 @@ module.exports = function() {
       this.seeTitleEquals('Sign in - Autodesk');
       this.waitForElement(inputUserName, 10);
 
-      // wait before filling in the text box
-      this.wait(1);
       // specify Sign-in Email
-      this.fillField(inputUserName, loginName);
-      // after updating dependencies we are so quick on click action that user name don't have time to be filled in
-      // this is why we need a delay for printing the username
-      this.wait(3);
-      this.click(buttonNext);
-      this.waitForNavigation();
+      this.limitTime(5).fillField(inputUserName, loginName);
+
+      this.limitTime(5).click(buttonNext);
+      this.limitTime(5).waitForNavigation();
 
       let currentUrl = await this.grabCurrentUrl();
       // in case it's using multifactor authentication
@@ -136,24 +132,20 @@ module.exports = function() {
       } 
 
       // specify Sign-in password
-      this.waitForVisible(inputPassword, 10);
-      // wait before filling in the text box
-      this.wait(1);
-      this.fillField(inputPassword, password);
-      // after updating dependencies we are so quick on click action that password don't have time to be filled in
-      // this is why we need a delay for printing the password
-      this.wait(3);
+      this.limitTime(5).waitForVisible(inputPassword, 10);
 
-      this.click(buttonSubmit);
+      this.limitTime(5).fillField(inputPassword, password);
+
+      this.limitTime(5).click(buttonSubmit);
 
       // look for the URL to determine if we are asked
       // to agree to authorize our application
-      this.waitForNavigation();
+      this.limitTime(5).waitForNavigation();
       currentUrl = await this.grabCurrentUrl();
       if (currentUrl.includes('auth.autodesk.com')) {
         // click on Allow Button
         this.waitForVisible(allowButton, 15);
-        this.click(allowButton);
+        this.limitTime(5).click(allowButton);
       }
 
       // check logged user
