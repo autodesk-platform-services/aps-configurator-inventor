@@ -31,6 +31,10 @@ using WebApplication.Middleware;
 using WebApplication.Services;
 using WebApplication.State;
 using WebApplication.Utilities;
+using Autodesk.Authentication.Model;
+using Autodesk.Authentication;
+using Autodesk.SDKManager;
+using System.Collections.Generic;
 
 namespace WebApplication.Controllers
 {
@@ -45,6 +49,8 @@ namespace WebApplication.Controllers
         private readonly InviteOnlyModeConfiguration _inviteOnlyModeConfig;
         private readonly TokenService _tokenService;
 
+        private AuthenticationClient authenticationClient;
+
         /// <summary>
         /// Forge configuration.
         /// </summary>
@@ -57,6 +63,13 @@ namespace WebApplication.Controllers
             Configuration = optionsAccessor.Value.Validate();
             _inviteOnlyModeConfig = inviteOnlyModeOptionsAccessor.Value;
             _tokenService = tokenService;
+
+            var sdkManager = SdkManagerBuilder.Create().Build();
+
+            // Set environment from AuthenticationAddress
+            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsoluteUri);
+
+            authenticationClient = new AuthenticationClient(sdkManager);
         }
 
         [HttpGet]
@@ -65,11 +78,9 @@ namespace WebApplication.Controllers
             _logger.LogInformation("Authorize against the Oxygen");
 
             var callbackUrl = _tokenService.GetCallbackUrl();
-            var encodedHost = HttpUtility.UrlEncode(callbackUrl);
 
             // prepare scope
-            var scopes = new[] { "user-profile:read" };
-            var fullScope = string.Join("%20", scopes); // it's not necessary now, but kept in case we need it in future
+            List<Scopes> scopes = new List<Scopes> { Scopes.UserProfileRead };
 
             string verifierID = CryptoRandom.CreateUniqueId(10);
             string codeVerifier = CryptoRandom.CreateUniqueId(32);
@@ -86,17 +97,7 @@ namespace WebApplication.Controllers
             }
             string code_challenge_method = "S256";
 
-            // build auth url (https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authorize-GET)
-            string baseUrl = Configuration.AuthenticationAddress.GetLeftPart(System.UriPartial.Authority);
-            var authUrl = string.Format("{0}/authentication/v2/authorize?response_type=code&client_id={1}&redirect_uri={2}&scope={3}&code_challenge={4}&code_challenge_method={5}&state={6}",
-                baseUrl,
-                /*client_id*/Configuration.ClientId,
-                /*redirect_uri*/encodedHost,
-                /*scope*/fullScope,
-                /*code_challenge*/code_challenge,
-                /*code_challenge_method*/code_challenge_method,
-                /*state*/verifierID
-            );
+            var authUrl = authenticationClient.Authorize(Configuration.ClientId, ResponseType.Code, callbackUrl, scopes, codeChallenge: code_challenge, codeChallengeMethod: code_challenge_method, state: verifierID);
 
             return Redirect(authUrl);
         }
@@ -107,16 +108,16 @@ namespace WebApplication.Controllers
             _logger.LogInformation("Get profile");
             if (_profileProvider.IsAuthenticated)
             {
-                dynamic profile = await _profileProvider.GetProfileAsync();
+                UserInfo profile = await _profileProvider.GetProfileAsync();
                 if (_inviteOnlyModeConfig.Enabled)
                 {
                     var inviteOnlyChecker = new InviteOnlyChecker(_inviteOnlyModeConfig);
-                    if (!profile.emailVerified || !inviteOnlyChecker.IsInvited(profile.emailId))
+                    if (!profile.EmailVerified == true || !inviteOnlyChecker.IsInvited(profile.Email))
                     {
                         return StatusCode(403);
                     }
                 }
-                return new ProfileDTO { Name = profile.firstName + " " + profile.lastName, AvatarUrl = profile.profileImages.sizeX40 };
+                return new ProfileDTO { Name = profile.Name, AvatarUrl = profile.Thumbnails["sizeX40"] };
             }
             else
             {

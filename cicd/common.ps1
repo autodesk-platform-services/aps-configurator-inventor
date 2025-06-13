@@ -19,4 +19,4 @@ CALLSTACK:$(Get-PSCallStack | Out-String)
 $env:STOP_AFTER_FAIL="true"
 $env:embedded="true"
 $env:NODE_ENV="development"
-$doteNetRelease = "net6.0"
+$doteNetRelease = "net8.0"

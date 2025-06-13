@@ -6,8 +6,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:jest/recommended",
-        "plugin:react/recommended"
+        "plugin:jest/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -31,6 +30,7 @@
         "semi": "warn",
         "no-var": "warn",
         "prefer-const": "warn",
+        "no-unused-vars": "off",
         "react/prop-types": 0 // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/prop-types.md
     },
     "settings": {

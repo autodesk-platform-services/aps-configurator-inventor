@@ -19,6 +19,7 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace WebApplication.Utilities
 {
@@ -35,7 +36,7 @@ namespace WebApplication.Utilities
             var memoryStream = new MemoryStream();
             using (var jsonWriter = new Utf8JsonWriter(memoryStream))
             {
-                JsonSerializer.Serialize(jsonWriter, data, typeof(T), new JsonSerializerOptions { WriteIndented = writeIndented, IgnoreNullValues = true });
+                JsonSerializer.Serialize(jsonWriter, data, typeof(T), new JsonSerializerOptions { WriteIndented = writeIndented, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull});
             }
 
             memoryStream.Position = 0;

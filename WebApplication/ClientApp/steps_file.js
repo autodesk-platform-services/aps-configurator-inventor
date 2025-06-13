@@ -62,7 +62,10 @@ module.exports = function() {
   const authorizationButton = '.auth-button';
   const loginName = process.env.SDRA_USERNAME;
   const password = process.env.SDRA_PASSWORD;
+  const trustToken = process.env.TRUST_TOKEN;
   const allowButton = '#allow_btn';
+  const idp_opt_in_url = 'https://accounts.autodesk.com/idp-opt-in';
+  const captcha_bypass_url = `https://idp.auth.autodesk.com/accounts/v1/hcaptcha/bypass?trustToken=${trustToken}`;
 
   return actor({
 
@@ -102,47 +105,48 @@ module.exports = function() {
     async signIn(){
      // we use Autodesk Account credentials //https://accounts.autodesk.com/
 
+      this.usePlaywrightTo('bypassCaptcha', async ({ context }) => {
+        // Opt into a new sign-in because of captcha issues in old sign-in
+        await context.request.get(idp_opt_in_url);
+
+        // Use a trust token to bypass captcha
+        await context.request.get(captcha_bypass_url);
+      });
+
       this.clickToAuthorizationButton();
 
       // check it is Sign-In page
-      this.seeTitleEquals('Sign in');
+      this.seeTitleEquals('Sign in - Autodesk');
       this.waitForElement(inputUserName, 10);
 
-      // wait before filling in the text box
-      this.wait(1);
       // specify Sign-in Email
-      this.fillField(inputUserName, loginName);
-      // after updating dependencies we are so quick on click action that user name don't have time to be filled in
-      // this is why we need a delay for printing the username
-      this.wait(3);
-      this.click(buttonNext);
-      this.waitForNavigation();
+      this.limitTime(10).fillField(inputUserName, loginName);
 
-      let currentUrl = await this.grabCurrentUrl();
-      // in case it's using multifactor authentication
-      if (currentUrl.includes('microsoftonline')) {
-        throw("Please use an Autodesk account that does not require multi-factor authentication")
-      } 
+      this.limitTime(10).click(buttonNext);
 
       // specify Sign-in password
-      this.waitForVisible(inputPassword, 10);
-      // wait before filling in the text box
-      this.wait(1);
-      this.fillField(inputPassword, password);
-      // after updating dependencies we are so quick on click action that password don't have time to be filled in
-      // this is why we need a delay for printing the password
-      this.wait(3);
+      this.waitForVisible(inputPassword, 10).catch(async () => {
+          console.error("Input password field not found.")
+          console.error("This is probably because of a captcha or redirect.")
+          console.error("Please make sure to use an Autodesk account that does not require multi-factor authentication.")
+      });
 
-      this.click(buttonSubmit);
+      this.limitTime(10).fillField(inputPassword, password);
+
+      this.limitTime(10).click(buttonSubmit);
+
+      // Wait for redirect to URL that isn't signin.autodesk.com
+      this.limitTime(10).usePlaywrightTo('waitForURL', async ({ context }) => {
+        await context.waitForURL(new RegExp("^((?!signin\.autodesk\.com).)*$"), { timeout: 10 });
+      });
 
       // look for the URL to determine if we are asked
       // to agree to authorize our application
-      this.waitForNavigation();
       currentUrl = await this.grabCurrentUrl();
       if (currentUrl.includes('auth.autodesk.com')) {
         // click on Allow Button
         this.waitForVisible(allowButton, 15);
-        this.click(allowButton);
+        this.limitTime(10).click(allowButton);
       }
 
       // check logged user

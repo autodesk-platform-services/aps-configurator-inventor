@@ -19,14 +19,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Autodesk.Forge;
-using Autodesk.Forge.Client;
+using System.Web;
+using Autodesk.Authentication;
+using Autodesk.Authentication.Model;
 using Autodesk.Forge.Core;
-using Autodesk.Forge.Model;
+using Autodesk.Oss;
+using Autodesk.Oss.Model;
+using Autodesk.SDKManager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -43,6 +47,10 @@ namespace WebApplication.Services
     /// </summary>
     public class ForgeOSS : IForgeOSS
     {
+        private SDKManager sdkManager;
+        private OssClient ossClient;
+        private AuthenticationClient authenticationClient;
+
         /// <summary>
         /// Page size for "Get Bucket Objects" operation.
         /// </summary>
@@ -50,7 +58,7 @@ namespace WebApplication.Services
 
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<ForgeOSS> _logger;
-        private static readonly Scope[] _scope = { Scope.DataRead, Scope.DataWrite, Scope.BucketCreate, Scope.BucketDelete, Scope.BucketRead };
+        private static readonly List<Scopes> _scope = new List<Scopes>() { Scopes.DataRead, Scopes.DataWrite, Scopes.BucketCreate, Scopes.BucketDelete, Scopes.BucketRead };
 
         private readonly AsyncPolicyWrap _ossResiliencyPolicy;
 
@@ -67,30 +75,31 @@ namespace WebApplication.Services
         /// </summary>
         public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger)
         {
+            sdkManager = SdkManagerBuilder.Create().Build();
+            ossClient = new OssClient(sdkManager);
+            authenticationClient = new AuthenticationClient(sdkManager);
+
             _clientFactory = clientFactory;
             _logger = logger;
             Configuration = optionsAccessor.Value.Validate();
-
-            string apiBaseUrl = Configuration.AuthenticationAddress.GetLeftPart(System.UriPartial.Authority);
-            Autodesk.Forge.Client.Configuration.Default.setApiClientUsingDefault(new ApiClient(apiBaseUrl));
 
             RefreshApiToken();
 
             // create policy to refresh API token on expiration (401 error code)
             var refreshTokenPolicy = Policy
-                                    .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status401Unauthorized)
+                                    .Handle<OssApiException>(e => e.HttpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
                                     .RetryAsync(5, (_, __) => RefreshApiToken());
 
             var bulkHeadPolicy = Policy.BulkheadAsync(10, int.MaxValue);
             var rateLimitRetryPolicy = Policy
-                .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status429TooManyRequests)
+                .Handle<OssApiException>(e => e.HttpResponseMessage.StatusCode == HttpStatusCode.TooManyRequests)
                 .WaitAndRetryAsync(new[] {
                     TimeSpan.FromSeconds(10),
                     TimeSpan.FromSeconds(20),
                     TimeSpan.FromSeconds(40)
                 });
             var waitForObjectPolicy = Policy
-                .Handle<ApiException>(e => e.ErrorCode == StatusCodes.Status404NotFound)
+                .Handle<OssApiException>(e => e.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(
                     retryCount: 4,
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -102,52 +111,27 @@ namespace WebApplication.Services
                 .WrapAsync(waitForObjectPolicy);
         }
 
-        public static bool PropertyExists(dynamic obj, string name)
-        {
-            if (obj == null) return false;
-            if (obj is IDictionary<string, object> dict)
-            {
-                return dict.ContainsKey(name);
-            }
-
-            var property = obj.GetType().GetProperty(name);
-            return property != null;
-        }
-
         public async Task<List<ObjectDetails>> GetBucketObjectsAsync(string bucketKey, string beginsWith = null)
         {
-            var objects = new List<ObjectDetails>();
+            BucketObjects objects = new BucketObjects();
+            objects.Items = new List<ObjectDetails>();
+
             string startAt = null; // next page pointer
 
-            do
-            {
-                DynamicJsonResponse response = await WithObjectsApiAsync(async api =>
+            do {
+                var tempObjects = await WithOssClientAsync(async ossClient =>
                 {
-                    return await api.GetObjectsAsync(bucketKey, PageSize, beginsWith, startAt);
+                    var tempObjects = await ossClient.GetObjectsAsync(bucketKey, PageSize, beginsWith, startAt);
+                    return tempObjects;
                 });
-                
 
-                foreach (KeyValuePair<string, dynamic> objInfo in new DynamicDictionaryItems((response as dynamic).items))
-                {
-                    dynamic item = objInfo.Value;
+                objects.Items.AddRange(tempObjects.Items);
 
-                    var details = new ObjectDetails
-                    {
-                        BucketKey = item.bucketKey,
-                        ObjectId = item.objectId,
-                        ObjectKey = item.objectKey,
-                        Sha1 = Encoding.ASCII.GetBytes(item.sha1),
-                        Size = (int?)item.size,
-                        Location = item.location
-                    };
-                    objects.Add(details);
-                }
-
-                startAt = GetNextStartAt(response.Dictionary);
+                startAt = tempObjects.Next;
 
             } while (startAt != null);
 
-            return objects;
+            return objects.Items;
         }
 
         /// <summary>
@@ -161,39 +145,21 @@ namespace WebApplication.Services
 
             do
             {
-                dynamic bucketList = await WithBucketApiAsync(async api =>
+                var bucketList = await WithOssClientAsync(async ossClient =>
                 {
-                    return await api.GetBucketsAsync(/* use default (US region) */ null, PageSize, startAt);
+                    return await ossClient.GetBucketsAsync(/* use default (US region) */ null, PageSize, startAt);
                 });
 
-                foreach (KeyValuePair<string, dynamic> bucketInfo in new DynamicDictionaryItems(bucketList.items))
+                foreach(var bucket in bucketList.Items)
                 {
-                    buckets.Add(bucketInfo.Value.bucketKey);
+                    buckets.Add(bucket.BucketKey);
                 }
 
-                startAt = GetNextStartAt(bucketList.Dictionary);
+                startAt = bucketList.Next;
 
             } while (startAt != null);
 
             return buckets;
-        }
-
-        private string GetNextStartAt(Dictionary<string, object> dict)
-        {
-            string startAt = null;
-            // check if there is a next page with projects
-            if (dict.TryGetValue("next", out var nextPage))
-            {
-                string nextPageUrl = (string)nextPage;
-                if (!string.IsNullOrEmpty(nextPageUrl))
-                {
-                    Uri nextUri = new Uri(nextPageUrl, UriKind.Absolute);
-                    Dictionary<string, StringValues> query = QueryHelpers.ParseNullableQuery(nextUri.Query);
-                    startAt = query["startAt"];
-                }
-            }
-
-            return startAt;
         }
 
       /// <summary>
@@ -202,16 +168,24 @@ namespace WebApplication.Services
       /// <param name="bucketKey">The bucket name.</param>
       public async Task CreateBucketAsync(string bucketKey)
         {
-            await WithBucketApiAsync(async api =>
+            await WithOssClientAsync(async ossClient =>
             {
-                var payload = new PostBucketsPayload(bucketKey, /*allow*/null, PostBucketsPayload.PolicyKeyEnum.Persistent);
-                await api.CreateBucketAsync(payload, "US");
+                var payload = new CreateBucketsPayload
+                {
+                    BucketKey = bucketKey,
+                    Allow = null,
+                    PolicyKey = PolicyKey.Persistent
+                };
+
+                await ossClient.CreateBucketAsync(Region.US, payload);
             });
         }
 
         public async Task DeleteBucketAsync(string bucketKey)
         {
-            await WithBucketApiAsync(async api => await api.DeleteBucketAsync(bucketKey));
+            await WithOssClientAsync(async ossClient =>
+                await ossClient.DeleteBucketAsync(bucketKey)
+            );
         }
 
         /// <summary>
@@ -223,25 +197,19 @@ namespace WebApplication.Services
         /// <param name="access">Requested access to the object.</param>
         /// <param name="minutesExpiration">Minutes while the URL is valid. Default is 30 minutes.</param>
         /// <returns>Signed URL</returns>
-        public async Task<string> CreateSignedUrlAsync(string bucketKey, string objectName, ObjectAccess access = ObjectAccess.Read, int minutesExpiration = 30)
+        public async Task<string> CreateSignedUrlAsync(string bucketKey, string objectName, Access access = Access.Read, int minutesExpiration = 30)
         {
-            return await WithObjectsApiAsync(async api => await GetSignedUrl(api, bucketKey, objectName, access, minutesExpiration));
+            return await GetSignedUrl(bucketKey, objectName, access, minutesExpiration);
         }
 
-        public async Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName)
+        public async Task<ObjectFullDetails> GetObjectDetailsAsync(string bucketKey, string objectName)
         {
-            var api = new ObjectsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
-            return await api.GetObjectDetailsAsync(bucketKey, objectName);
+            return await ossClient.GetObjectDetailsAsync(bucketKey, EncodedObjectName(objectName), accessToken: await TwoLeggedAccessToken);
         }
 
         public async Task UploadObjectAsync(string bucketKey, string objectName, Stream stream)
         {
-            await WithObjectsApiAsync(async api => await api.uploadResources(
-                bucketKey,
-                new List<UploadItemDesc> {
-                    new UploadItemDesc(objectName, stream)
-                }
-            ));
+            await WithOssClientAsync(async ossClient => await ossClient.UploadObjectAsync(bucketKey, EncodedObjectName(objectName), stream));
         }
 
         /// <summary>
@@ -253,13 +221,15 @@ namespace WebApplication.Services
         public async Task RenameObjectAsync(string bucketKey, string oldName, string newName)
         {
             // OSS does not support renaming, so emulate it with more ineffective operations
-            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, oldName, newName));
-            await WithObjectsApiAsync(async api => await api.DeleteObjectAsync(bucketKey, oldName));   
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, EncodedObjectName(oldName), EncodedObjectName(newName)));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, EncodedObjectName(oldName)));
         }
 
-        public async Task<Autodesk.Forge.Client.ApiResponse<dynamic>> GetObjectAsync(string bucketKey, string objectName)
+        public async Task<Stream> GetObjectAsync(string bucketKey, string objectName)
         {
-            return await WithObjectsApiAsync(async api => await api.GetObjectAsyncWithHttpInfo(bucketKey, objectName));
+            Stream stream = await WithOssClientAsync(async ossClient => await ossClient.DownloadObjectAsync(bucketKey, EncodedObjectName(objectName)));
+            stream.Position = 0; // The returned stream doesn't start from zero. Start from zero.
+            return stream;
         }
 
         /// <summary>
@@ -267,7 +237,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task CopyAsync(string bucketKey, string fromName, string toName)
         {
-            await WithObjectsApiAsync(async api => await api.CopyToAsync(bucketKey, fromName, toName));       
+            await WithOssClientAsync(async ossClient => await ossClient.CopyToAsync(bucketKey, EncodedObjectName(fromName), EncodedObjectName(toName)));
         }
 
         /// <summary>
@@ -275,7 +245,7 @@ namespace WebApplication.Services
         /// </summary>
         public async Task DeleteAsync(string bucketKey, string objectName)
         {
-            await WithObjectsApiAsync(async api => await api.DeleteObjectAsync(bucketKey, objectName));
+            await WithOssClientAsync(async ossClient => await ossClient.DeleteObjectAsync(bucketKey, EncodedObjectName(objectName)));
         }
 
         /// <summary>
@@ -293,71 +263,41 @@ namespace WebApplication.Services
         /// Get profile for the user with the access token.
         /// </summary>
         /// <param name="token">Oxygen access token.</param>
-        /// <returns>Dynamic object with User Profile</returns>
+        /// <returns>Object with User Info</returns>
         /// <remarks>
-        /// User Profile fields: https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
+        /// User Profile fields: https://aps.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
         /// </remarks>
-        public async Task<dynamic> GetProfileAsync(string token)
+        public async Task<UserInfo> GetProfileAsync(string token)
         {
-            var api = new UserProfileApi(new Configuration { AccessToken = token }); // TODO: use Polly cache policy!
-            return await api.GetUserProfileAsync();
+            return await authenticationClient.GetUserInfoAsync(token); // TODO: use Polly cache policy!
         }
 
         /// <summary>
-        /// Run action against Buckets OSS API.
+        /// Run action against OSS Client.
         /// </summary>
         /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task WithBucketApiAsync(Func<BucketsApi, Task> action)
+        private async Task WithOssClientAsync(Func<OssClient, Task> action)
         {
             await _ossResiliencyPolicy.ExecuteAsync(async () =>
-                    {
-                        var api = new BucketsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
-                        await action(api);
-                    });
-        }
-
-        /// <summary>
-        /// Run action against Buckets OSS API.
-        /// </summary>
-        /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task<T> WithBucketApiAsync<T>(Func<BucketsApi, Task<T>> action)
-        {
-            return await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                var api = new BucketsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
-                return await action(api);
+                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
+                ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
+                await action(ossClient);
             });
         }
 
         /// <summary>
-        /// Run action against Objects OSS API.
+        /// Run action against OSS Client.
         /// </summary>
         /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task WithObjectsApiAsync(Func<ObjectsApi, Task> action)
-        {
-            await _ossResiliencyPolicy.ExecuteAsync(async () =>
-                    {
-                        var api = new ObjectsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
-                        await action(api);
-                    });
-        }
-
-        /// <summary>
-        /// Run action against Objects OSS API.
-        /// </summary>
-        /// <remarks>The action runs with retry policy to handle API token expiration.</remarks>
-        private async Task<T> WithObjectsApiAsync<T>(Func<ObjectsApi, Task<T>> action)
+        private async Task<T> WithOssClientAsync<T>(Func<OssClient, Task<T>> action)
         {
             return await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                var api = new ObjectsApi { Configuration = { AccessToken = await TwoLeggedAccessToken } };
-                return await action(api);
+                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
+                ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
+                return await action(ossClient);
             });
-        }
-
-        private static string AsString(ObjectAccess access)
-        {
-            return access.ToString().ToLowerInvariant();
         }
 
         private void RefreshApiToken()
@@ -368,30 +308,34 @@ namespace WebApplication.Services
         private async Task<string> _2leggedAsync()
         {
             _logger.LogInformation("Refreshing Forge token");
+            TwoLeggedToken twoLeggedToken = await authenticationClient.GetTwoLeggedTokenAsync(Configuration.ClientId, Configuration.ClientSecret, _scope);
 
-            // Call the asynchronous version of the 2-legged client with HTTP information
-            // HTTP information helps to verify if the call was successful as well as read the HTTP transaction headers.
-            var twoLeggedApi = new TwoLeggedApi();
-            Autodesk.Forge.Client.ApiResponse<dynamic> response = await twoLeggedApi.AuthenticateAsyncWithHttpInfo(Configuration.ClientId, Configuration.ClientSecret, oAuthConstants.CLIENT_CREDENTIALS, _scope);
-            if (response.StatusCode != StatusCodes.Status200OK)
-            {
-                throw new Exception("Request failed! (with HTTP response " + response.StatusCode + ")");
-            }
-
-            // The JSON response from the oAuth server is the Data variable and has already been parsed into a DynamicDictionary object.
-            dynamic bearer = response.Data;
-            return bearer.access_token;
+            return twoLeggedToken.AccessToken;
         }
 
         /// <summary>
         /// Generate signed URL for the OSS object.
         /// </summary>
-        private static async Task<string> GetSignedUrl(IObjectsApi api, string bucketKey, string objectName,
-                                                            ObjectAccess access = ObjectAccess.Read, int minutesExpiration = 30)
+        private async Task<string> GetSignedUrl(string bucketKey, string objectName,
+                                                        Access access = Access.Read, int minutesExpiration = 30)
         {
-            var signature = new PostBucketsSigned(minutesExpiration);
-            dynamic result = await api.CreateSignedResourceAsync(bucketKey, objectName, signature, AsString(access));
-            return result.signedUrl;
+            CreateSignedResource createSignedResource = new CreateSignedResource
+            {
+                MinutesExpiration = minutesExpiration,
+                SingleUse = false
+            };
+
+            CreateObjectSigned result = await WithOssClientAsync(async ossClient => await ossClient.CreateSignedResourceAsync(bucketKey, EncodedObjectName(objectName), createSignedResource, access));
+            return result.SignedUrl;
+        }
+
+        /// <summary>
+        /// Encode object name.
+        /// New SDK expects encoded names.
+        /// </summary>
+        private string EncodedObjectName(string objectName)
+        {
+            return HttpUtility.UrlEncode(objectName);
         }
     }
 }

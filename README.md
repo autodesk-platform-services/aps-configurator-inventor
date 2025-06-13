@@ -10,7 +10,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
 ## Prerequisites
 
 ### Web Application 
-1. .NET Core 3.1
+1. .NET 8
 2. Node.js    
 	**Important note:** In Node.js even releases are stable, and odd-numbered versions are unstable. That's said we won't support or guarantee the work of the application using the odd-numbered Node.js versions. Currently the latest version we support is the even version **v16.13.2**. Unless version **v18** will be released we are not supporting versions newer than **v16**.
 3. (recommended) Visual Studio Code with extensions:
@@ -19,7 +19,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
     * [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
     * [psioniq File Header](https://marketplace.visualstudio.com/items?itemName=psioniq.psi-header) (to insert copyright header)
 ### App Bundles
-1. Autodesk Inventor 2021
+1. Autodesk Inventor 2025
 1. Visual Studio 2022
 
 ## Run sample for the first time
@@ -35,7 +35,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
     **d)** (not on dev machine) Modify `appsettings.json` (or `appsettings.<ENVIRONMENT>.json`) with the template mentioned in **c)**\
     **e)** Set environment variable 'set NODE_ENV=development'
 
-1. Make a copy of `InventorBinFolder.props.template` in the top `AppBundles` folder named `InventorBinFolder.props` and replace the `PATH_TO_YOUR_INVENTOR_BIN` string in it with your actual Inventor bin folder path, for example: `C:\Program Files\Autodesk\Inventor 2021\Bin` then right-click on the solution in the **Solution Explorer** window and select **Load All Projects**
+1. Make a copy of `InventorBinFolder.props.template` in the top `AppBundles` folder named `InventorBinFolder.props` and replace the `PATH_TO_YOUR_INVENTOR_BIN` string in it with your actual Inventor bin folder path, for example: `C:\Program Files\Autodesk\Inventor 2025\Bin` then right-click on the solution in the **Solution Explorer** window and select **Load All Projects**
 1. (Optional) Choose network configuration for your application. By default polling is enabled as it offers an easier way to setup and run the application. This is OK for locally run applications and debugging. However
    in production using the new callback option is highly recommended to conserve resources. In order to enable the callback option modify the `Publisher` section of the appsettings.json file. 
    Change `"CompletionCheck"` value from `"Polling"` to `"Callback"` and set `"CallbackUrlBase"` url to your server URL or ngrok tunnel URL for a locally run application.
@@ -105,6 +105,7 @@ This time your browser should open up **automatically** showing the correct **UR
 ### UI Tests
 * For UI tests we are using `CodeCeptJs` framework. All tests are stored in `ClientApp/src/ui-tests/` and we filter all files end with `*_test.js`. 
 * Set environment variables `SDRA_USERNAME` and `SDRA_PASSWORD` for `Sign-in` workflow. We are using Autodesk Account credentials for `Sign-in`.
+* Set environment variable `TRUST_TOKEN` to bypass hcaptcha.
 * Set `"embedded" : true` In `appsettings.Local.json` file mentioned in `Run sample for the first time` 5c)
     * Also you can create a `.env` file in the `WebApplication/ClientApp` directory to define the environment variables - for more details follow this link: https://www.npmjs.com/package/dotenv
 * Note that the server needs to be running for these tests
@@ -116,8 +117,8 @@ This time your browser should open up **automatically** showing the correct **UR
 ## Backend
 We are using the APS service on the backend https://aps.autodesk.com/
 
-### .NET Core
-We are using the latest version of .NET Core (3.1 at the time of writing) https://dotnet.microsoft.com/download/dotnet-core/3.1
+### .NET
+We are using .NET 8.0 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 The project was initally created using the command `dotnet new react`
 
@@ -133,7 +134,7 @@ Used for storing your designs. For communication with Design Automation
 
 https://aps.autodesk.com/en/docs/data/v2/developers_guide/overview/
 
-C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-client
+C# SDK https://github.com/autodesk-platform-services/aps-sdk-net
 
 ## Client app
 
@@ -175,7 +176,6 @@ We are using npm.
 * For CSS: `npm run lint-css`
 
 ### Deploy
-* For an advanced example of CI/CD on AWS, see [AWS-CICD](AWS-CICD/README.md)
 * For a simple method of deploying to Azure, see [Publish a Web app to Azure App Service using Visual Studio](https://docs.microsoft.com/en-us/visualstudio/deployment/quickstart-deploy-to-azure?view=vs-2019)
     * First change `WebApplication.Program.cs` by removing the `UseKestrel()` statement
     * You will need to change the callback in your APS app to match the URL you deploy to.

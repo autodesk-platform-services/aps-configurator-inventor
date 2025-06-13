@@ -48,5 +48,7 @@ exports.config = {
     screenshotOnFail: {
       enabled: true
     }
-  }
+  },
+  // each test must not run longer than 15 mins
+  timeout: 900
 }

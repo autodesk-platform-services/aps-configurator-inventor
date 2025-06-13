@@ -18,19 +18,14 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Autodesk.Authentication.Model;
 using Autodesk.Forge.Core;
-using Autodesk.Forge.Model;
+using Autodesk.Oss.Model;
 
 namespace WebApplication.Services
 {
-    public enum ObjectAccess
-    {
-        Read,
-        Write,
-        ReadWrite
-    }
-
     public interface IForgeOSS
     {
         /// <summary>
@@ -53,7 +48,7 @@ namespace WebApplication.Services
         /// <param name="access">Requested access to the object.</param>
         /// <param name="minutesExpiration">Minutes while the URL is valid. Default is 30 minutes.</param>
         /// <returns>Signed URL</returns>
-        Task<string> CreateSignedUrlAsync(string bucketKey, string objectName, ObjectAccess access = ObjectAccess.Read, int minutesExpiration = 30);
+        Task<string> CreateSignedUrlAsync(string bucketKey, string objectName, Access access = Access.Read, int minutesExpiration = 30);
 
         /// <summary>
         /// Rename object.
@@ -63,7 +58,7 @@ namespace WebApplication.Services
         /// <param name="newName">New object name.</param>
         Task RenameObjectAsync(string bucketKey, string oldName, string newName);
 
-        Task<Autodesk.Forge.Client.ApiResponse<dynamic>> GetObjectAsync(string bucketKey, string objectName);
+        Task<Stream> GetObjectAsync(string bucketKey, string objectName);
 
         /// <summary>
         /// Copy OSS object.
@@ -80,16 +75,16 @@ namespace WebApplication.Services
         /// </summary>
         Task DownloadFileAsync(string bucketKey, string objectName, string localFullName);
 
-        Task<dynamic> GetObjectDetailsAsync(string bucketKey, string objectName);
+        Task<ObjectFullDetails> GetObjectDetailsAsync(string bucketKey, string objectName);
 
         /// <summary>
         /// Get profile for the user with the access token.
         /// </summary>
         /// <param name="token">Oxygen access token.</param>
-        /// <returns>Dynamic object with User Profile</returns>
+        /// <returns>Object with User Info</returns>
         /// <remarks>
         /// User Profile fields: https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
         /// </remarks>
-        Task<dynamic> GetProfileAsync(string token);
+        Task<UserInfo> GetProfileAsync(string token);
     }
 }

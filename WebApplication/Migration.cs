@@ -19,9 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Autodesk.Forge.Client;
-using Autodesk.Forge.Model;
-using Microsoft.AspNetCore.Http;
+using Autodesk.Oss;
+using Autodesk.Oss.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -98,7 +97,7 @@ namespace MigrationApp
                   projectNamesNew.Add(projectName);
             }
          }
-         catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+         catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
          {
             // swallow non existing item
          }
@@ -113,7 +112,7 @@ namespace MigrationApp
                   configKeysNew.Add(configODNew.ObjectKey);
             }
          }
-         catch (ApiException e) when (e.ErrorCode == StatusCodes.Status404NotFound)
+         catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
          {
             // swallow non existing item
          }

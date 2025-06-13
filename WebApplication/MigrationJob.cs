@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Autodesk.Oss.Model;
 using Microsoft.Extensions.Logging;
 using Shared;
 using WebApplication.Definitions;
@@ -94,8 +95,8 @@ namespace MigrationApp
          _logger.LogInformation($"{logId}: Processing new project {projectInfo.Name} in bucket {bucket.BucketKey}");
          OssBucket bucketNew = await _userResolver.GetBucketAsync(true);
 
-         string signedUrlOld = await bucket.CreateSignedUrlAsync(projectUrl, ObjectAccess.Read);
-         string signedUrlNew = await bucketNew.CreateSignedUrlAsync(projectUrl, ObjectAccess.ReadWrite);
+         string signedUrlOld = await bucket.CreateSignedUrlAsync(projectUrl, Access.Read);
+         string signedUrlNew = await bucketNew.CreateSignedUrlAsync(projectUrl, Access.ReadWrite);
 
          try
          {

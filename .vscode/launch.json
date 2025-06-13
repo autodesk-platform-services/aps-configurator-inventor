@@ -56,7 +56,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/WebApplication/bin/Debug/net6.0/WebApplication.dll",
+            "program": "${workspaceFolder}/WebApplication/bin/Debug/net8.0/WebApplication.dll",
             "args": [],
             "cwd": "${workspaceFolder}/WebApplication",
             "stopAtEntry": false,

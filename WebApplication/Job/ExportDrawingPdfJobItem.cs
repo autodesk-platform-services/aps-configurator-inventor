@@ -43,7 +43,7 @@ namespace WebApplication.Job
 
         public override async Task ProcessJobAsync(IResultSender resultSender)
         {
-            using var scope = Logger.BeginScope("Export Drawing PDF ({Id})");
+            using var scope = Logger.BeginScope($"Export Drawing PDF ({Id})");
             Logger.LogInformation($"ProcessJob (ExportDrawingPDF) {Id} for project {ProjectId} started.");
 
             (FdaStatsDTO stats, int drawingIndex, string reportUrl) = await ProjectWork.ExportDrawingPdfAsync(ProjectId, _hash, _drawingKey);

@@ -16,7 +16,7 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-using Autodesk.Forge.Model;
+using Autodesk.Oss.Model;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -30,7 +30,7 @@ namespace WebApplication.Tests
     [Collection("IntegrationTests1")]
     public class InitializerIntegrationTest : InitializerTestBase, IAsyncLifetime
     {
-        const string testZippedIamUrl = "https://testipt.s3-us-west-2.amazonaws.com/Basic.zip";
+        const string testZippedIamUrl = "https://testipt.s3-us-west-2.amazonaws.com/Basic2025.zip";
         const string testIamPathInZip = "iLogicBasic1.iam";
 
         private static readonly DefaultProjectsConfiguration defaultProjectsConfiguration = new DefaultProjectsConfiguration
