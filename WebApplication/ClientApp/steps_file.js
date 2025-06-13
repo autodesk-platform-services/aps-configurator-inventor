@@ -105,7 +105,7 @@ module.exports = function() {
     async signIn(){
      // we use Autodesk Account credentials //https://accounts.autodesk.com/
 
-      this.usePlaywrightTo('goto', async ({ context }) => {
+      this.usePlaywrightTo('bypassCaptcha', async ({ context }) => {
         // Opt into a new sign-in because of captcha issues in old sign-in
         await context.request.get(idp_opt_in_url);
 
@@ -120,32 +120,33 @@ module.exports = function() {
       this.waitForElement(inputUserName, 10);
 
       // specify Sign-in Email
-      this.limitTime(5).fillField(inputUserName, loginName);
+      this.limitTime(10).fillField(inputUserName, loginName);
 
-      this.limitTime(5).click(buttonNext);
-      this.limitTime(5).waitForNavigation();
-
-      let currentUrl = await this.grabCurrentUrl();
-      // in case it's using multifactor authentication
-      if (currentUrl.includes('microsoftonline')) {
-        throw("Please use an Autodesk account that does not require multi-factor authentication")
-      } 
+      this.limitTime(10).click(buttonNext);
 
       // specify Sign-in password
-      this.limitTime(5).waitForVisible(inputPassword, 10);
+      this.waitForVisible(inputPassword, 10).catch(async () => {
+          console.error("Input password field not found.")
+          console.error("This is probably because of a captcha or redirect.")
+          console.error("Please make sure to use an Autodesk account that does not require multi-factor authentication.")
+      });
 
-      this.limitTime(5).fillField(inputPassword, password);
+      this.limitTime(10).fillField(inputPassword, password);
 
-      this.limitTime(5).click(buttonSubmit);
+      this.limitTime(10).click(buttonSubmit);
+
+      // Wait for redirect to URL that isn't signin.autodesk.com
+      this.limitTime(10).usePlaywrightTo('waitForURL', async ({ context }) => {
+        await context.waitForURL(new RegExp("^((?!signin\.autodesk\.com).)*$"), { timeout: 10 });
+      });
 
       // look for the URL to determine if we are asked
       // to agree to authorize our application
-      this.limitTime(5).waitForNavigation();
       currentUrl = await this.grabCurrentUrl();
       if (currentUrl.includes('auth.autodesk.com')) {
         // click on Allow Button
         this.waitForVisible(allowButton, 15);
-        this.limitTime(5).click(allowButton);
+        this.limitTime(10).click(allowButton);
       }
 
       // check logged user
