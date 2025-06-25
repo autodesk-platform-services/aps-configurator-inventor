@@ -200,7 +200,7 @@ namespace WebApplication.Processing
         public const string InputDocParameterName = "InventorDoc";
 
         /// <summary>
-        /// Where zip stored at DA servers.
+        /// Where is zip stored at the Automation Service servers.
         /// </summary>
         /// <remarks>NOTE: arg name is misleading, this actually is a dirname, where the zip is extracted.</remarks>
         protected const string FolderToBeZippedName = "unzippedIam";

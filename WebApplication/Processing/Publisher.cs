@@ -129,7 +129,7 @@ namespace WebApplication.Processing
             string trackingKey = _guidGenerator.GenerateGuid();
             var completionSource = Tracker.GetOrAdd(trackingKey, new TaskCompletionSource<WorkItemStatus>());
 
-            // build callback URL to be poked from FDA server on WI completion
+            // build callback URL to be poked from the Automation Service server on WI completion
             string callbackUrl = _callbackUrlBase + trackingKey;
             var callbackOnComplete = new XrefTreeArgument { Verb = Verb.Post, Url = callbackUrl };
             wi.Arguments.Add("onComplete", callbackOnComplete);

@@ -26,7 +26,7 @@ namespace WebApplication.Definitions
         Polling,
 
         /// <summary>
-        /// Use callback URL to get notification from FDA servers.
+        /// Use callback URL to get notification from the Automation Service servers.
         /// </summary>
         Callback
     }

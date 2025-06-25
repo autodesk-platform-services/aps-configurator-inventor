@@ -63,7 +63,7 @@ namespace WebApplication.Controllers
         }
         
         /// <summary>
-        /// Completion callback for FDA work items.
+        /// Completion callback for the Automation Service work items.
         /// </summary>
         /// <param name="trackerId">Tracking ID.</param>
         /// <param name="status">Workitem status.</param>

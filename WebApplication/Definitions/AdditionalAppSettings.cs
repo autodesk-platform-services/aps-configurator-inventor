@@ -76,7 +76,7 @@ namespace WebApplication.Definitions
     }
 
     /// <summary>
-    /// FDA processing options.
+    /// Automation Service processing options.
     /// </summary>
     public class ProcessingOptions
     {

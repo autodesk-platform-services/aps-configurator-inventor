@@ -21,7 +21,7 @@ using System;
 namespace WebApplication.Definitions
 {
     /// <summary>
-    /// Exception for FDA processing failures.
+    /// Exception for Automation Service processing failures.
     /// Contains URL to processing report.
     /// </summary>
     public class FdaProcessingException : Exception

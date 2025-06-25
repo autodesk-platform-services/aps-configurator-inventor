@@ -192,10 +192,10 @@ We are using npm.
 	* Press ok
 	* Name your resulting zip file
 	
-* For more information on this issue please refer to the [FDA troubleshooting page](https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
+* For more information on this issue please refer to the [Automation API troubleshooting page](https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
 
 ### Use ngrok for localhost callbacks
-* If you choose webhook callback network configuration for the application, you will need a way for the callbacks to get from the FDA servers to your local machine.
+* If you choose webhook callback network configuration for the application, you will need a way for the callbacks to get from the Automation Service servers to your local machine.
 * One of the tools that can assist you with this task is ngrok https://ngrok.com/ 
 * These steps should help you to set up an ngrok tunnel to your localhost:
 	* Create a free ngrok account
