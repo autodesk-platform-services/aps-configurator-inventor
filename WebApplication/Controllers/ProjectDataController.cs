@@ -1,6 +1,6 @@
 ﻿/////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Autodesk Design Automation team for Inventor
+// Written by Autodesk Inventor Automation team
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -68,7 +68,7 @@ namespace WebApplication.Controllers
         /// <param name="trackerId">Tracking ID.</param>
         /// <param name="status">Workitem status.</param>
         /// <remarks>
-        /// https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/callbacks/#oncomplete-callback
+        /// https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/callbacks/#oncomplete-callback
         /// </remarks>
         [HttpPost("complete/{trackerId}")]
         public ActionResult Complete(string trackerId, [FromBody] WorkItemStatus status)

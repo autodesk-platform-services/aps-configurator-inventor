@@ -28,7 +28,7 @@ namespace WebApplication.Processing
         private const string OutputModelIPTParameterName = "OutputModelIPTFile";
 
         /// <summary>
-        /// Design Automation parameter name for JSON file with Inventor parameters.
+        /// Autodesk Automation parameter name for JSON file with Inventor parameters.
         /// </summary>
         private const string InventorParameters = "InventorParams";
 
