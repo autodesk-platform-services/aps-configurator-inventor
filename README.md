@@ -122,7 +122,7 @@ We are using .NET 8.0 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 The project was initally created using the command `dotnet new react`
 
-### Automation
+### Autodesk Automation
 https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/overview/
 
 C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-design.automation
