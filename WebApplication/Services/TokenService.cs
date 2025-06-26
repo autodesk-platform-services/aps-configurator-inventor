@@ -94,16 +94,7 @@ namespace WebApplication.Services
             var encodedHost = HttpUtility.UrlEncode(callbackUrl);
             string authorization = Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration.ClientId + ":" + Configuration.ClientSecret));
 
-            var response = await authenticationClient.tokenApi.FetchTokenAsync(authorization, GrantType.AuthorizationCode, code, callbackUrl, codeVerifier, throwOnError: false);
-            if (response.IsSuccessStatusCode)
-            {
-                return await LocalMarshalling.DeserializeAsync<ThreeLeggedToken>(response.Content);
-            }
-
-            return null;
-
-            // This function is currently unusable because it ignores codeVerifier
-            // return await authenticationClient.GetThreeLeggedTokenAsync(Configuration.ClientId, code, callbackUrl, Configuration.ClientSecret, codeVerifier);
+            return await authenticationClient.GetThreeLeggedTokenAsync(Configuration.ClientId, code, callbackUrl, Configuration.ClientSecret, codeVerifier);
         }
 
         private void CleanupExpiredTokens()
