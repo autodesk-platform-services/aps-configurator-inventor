@@ -73,9 +73,10 @@ namespace WebApplication.Services
         /// <summary>
         /// Constructor.
         /// </summary>
-        public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger)
+        public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger,
+            SDKManagerProvider sdkManagerProvider)
         {
-            sdkManager = SdkManagerBuilder.Create().Build();
+            sdkManager = sdkManagerProvider.ProvideSDKManager();
             ossClient = new OssClient(sdkManager);
             authenticationClient = new AuthenticationClient(sdkManager);
 

@@ -39,7 +39,7 @@ namespace WebApplication.Services
         private AuthenticationClient authenticationClient;
 
         public TokenService(IOptions<ForgeConfiguration> forgeConfiguration, IOptions<ForgeConfiguration> optionsAccessor,
-            IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
+            IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor, SDKManagerProvider sdkManagerProvider)
         {
             Configuration = optionsAccessor.Value.Validate();
             _forgeConfig = forgeConfiguration.Value;
@@ -47,10 +47,7 @@ namespace WebApplication.Services
             _clientFactory = clientFactory;
             _httpContextAccessor = httpContextAccessor;
 
-            var sdkManager = SdkManagerBuilder.Create().Build();
-
-            // Set environment from AuthenticationAddress
-            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsoluteUri);
+            var sdkManager = sdkManagerProvider.ProvideSDKManager();
 
             authenticationClient = new AuthenticationClient(sdkManager);
         }
