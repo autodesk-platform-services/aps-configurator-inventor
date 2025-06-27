@@ -56,7 +56,8 @@ namespace WebApplication.Controllers
         /// </summary>
         public ForgeConfiguration Configuration { get; }
 
-        public LoginController(ILogger<LoginController> logger, IOptions<ForgeConfiguration> optionsAccessor, ProfileProvider profileProvider, IOptions<InviteOnlyModeConfiguration> inviteOnlyModeOptionsAccessor, TokenService  tokenService)
+        public LoginController(ILogger<LoginController> logger, IOptions<ForgeConfiguration> optionsAccessor, ProfileProvider profileProvider,
+                IOptions<InviteOnlyModeConfiguration> inviteOnlyModeOptionsAccessor, TokenService  tokenService, SDKManagerProvider sdkManagerProvider)
         {
             _logger = logger;
             _profileProvider = profileProvider;
@@ -64,10 +65,7 @@ namespace WebApplication.Controllers
             _inviteOnlyModeConfig = inviteOnlyModeOptionsAccessor.Value;
             _tokenService = tokenService;
 
-            var sdkManager = SdkManagerBuilder.Create().Build();
-
-            // Set environment from AuthenticationAddress
-            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsoluteUri);
+            var sdkManager = sdkManagerProvider.ProvideSDKManager();
 
             authenticationClient = new AuthenticationClient(sdkManager);
         }

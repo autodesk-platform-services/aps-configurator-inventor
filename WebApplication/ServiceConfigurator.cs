@@ -82,6 +82,7 @@ namespace WebApplication
 
             services.AddSingleton<IResourceProvider, ResourceProvider>();
             services.AddSingleton<IPostProcessing, PostProcessing>();
+            services.AddSingleton<SDKManagerProvider>();
             services.AddSingleton<IForgeOSS, ForgeOSS>();
             services.AddSingleton<FdaClient>();
             services.AddTransient<Initializer>();
