@@ -64,7 +64,8 @@ namespace WebApplication.Tests
 
             var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-            forgeOSS = new ForgeOSS(httpClientFactory, forgeConfigOptions, new NullLogger<ForgeOSS>());
+            var sdkManagerProvider = new SDKManagerProvider(forgeConfigOptions);
+            forgeOSS = new ForgeOSS(httpClientFactory, forgeConfigOptions, new NullLogger<ForgeOSS>(), sdkManagerProvider);
 
             var httpMessageHandler = new ForgeHandler(Options.Create(forgeConfiguration))
             {

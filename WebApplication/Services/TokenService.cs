@@ -39,7 +39,7 @@ namespace WebApplication.Services
         private AuthenticationClient authenticationClient;
 
         public TokenService(IOptions<ForgeConfiguration> forgeConfiguration, IOptions<ForgeConfiguration> optionsAccessor,
-            IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
+            IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor, SDKManagerProvider sdkManagerProvider)
         {
             Configuration = optionsAccessor.Value.Validate();
             _forgeConfig = forgeConfiguration.Value;
@@ -47,10 +47,7 @@ namespace WebApplication.Services
             _clientFactory = clientFactory;
             _httpContextAccessor = httpContextAccessor;
 
-            var sdkManager = SdkManagerBuilder.Create().Build();
-
-            // Set environment from AuthenticationAddress
-            sdkManager.SetEnvFromAuthAddress(Configuration.AuthenticationAddress.AbsoluteUri);
+            var sdkManager = sdkManagerProvider.ProvideSDKManager();
 
             authenticationClient = new AuthenticationClient(sdkManager);
         }
@@ -94,16 +91,7 @@ namespace WebApplication.Services
             var encodedHost = HttpUtility.UrlEncode(callbackUrl);
             string authorization = Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration.ClientId + ":" + Configuration.ClientSecret));
 
-            var response = await authenticationClient.tokenApi.FetchTokenAsync(authorization, GrantType.AuthorizationCode, code, callbackUrl, codeVerifier, throwOnError: false);
-            if (response.IsSuccessStatusCode)
-            {
-                return await LocalMarshalling.DeserializeAsync<ThreeLeggedToken>(response.Content);
-            }
-
-            return null;
-
-            // This function is currently unusable because it ignores codeVerifier
-            // return await authenticationClient.GetThreeLeggedTokenAsync(Configuration.ClientId, code, callbackUrl, Configuration.ClientSecret, codeVerifier);
+            return await authenticationClient.GetThreeLeggedTokenAsync(Configuration.ClientId, code, callbackUrl, Configuration.ClientSecret, codeVerifier);
         }
 
         private void CleanupExpiredTokens()

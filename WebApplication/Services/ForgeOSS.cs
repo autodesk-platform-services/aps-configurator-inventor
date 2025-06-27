@@ -73,9 +73,10 @@ namespace WebApplication.Services
         /// <summary>
         /// Constructor.
         /// </summary>
-        public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger)
+        public ForgeOSS(IHttpClientFactory clientFactory, IOptions<ForgeConfiguration> optionsAccessor, ILogger<ForgeOSS> logger,
+            SDKManagerProvider sdkManagerProvider)
         {
-            sdkManager = SdkManagerBuilder.Create().Build();
+            sdkManager = sdkManagerProvider.ProvideSDKManager();
             ossClient = new OssClient(sdkManager);
             authenticationClient = new AuthenticationClient(sdkManager);
 
@@ -228,7 +229,6 @@ namespace WebApplication.Services
         public async Task<Stream> GetObjectAsync(string bucketKey, string objectName)
         {
             Stream stream = await WithOssClientAsync(async ossClient => await ossClient.DownloadObjectAsync(bucketKey, EncodedObjectName(objectName)));
-            stream.Position = 0; // The returned stream doesn't start from zero. Start from zero.
             return stream;
         }
 
@@ -280,7 +280,6 @@ namespace WebApplication.Services
         {
             await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
                 ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
                 await action(ossClient);
             });
@@ -294,7 +293,6 @@ namespace WebApplication.Services
         {
             return await _ossResiliencyPolicy.ExecuteAsync(async () =>
             {
-                ossClient = new OssClient(sdkManager); // Create new OSS Client to prevent header pollution. The SDK keeps adding x-ads-request-id.
                 ossClient.AuthenticationProvider = new StaticAuthenticationProvider(await TwoLeggedAccessToken);
                 return await action(ossClient);
             });
