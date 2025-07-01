@@ -1,5 +1,5 @@
 # Configurator Inventor
-Demo application showcasing Configuration with Design Automation for Inventor
+Demo application showcasing Configuration with Inventor Automation API
 
 ![thumbnail](/thumbnail.gif)
 
@@ -24,7 +24,7 @@ Demo application showcasing Configuration with Design Automation for Inventor
 
 ## Run sample for the first time
 1. Clone repository
-1. Create an APS app at https://aps.autodesk.com/, and select `Design Automation API` and `Data Management API` in the **APIs** section
+1. Create an APS app at https://aps.autodesk.com/, and select `Automation API` and `Data Management API` in the **APIs** section
 ![thumbnail](/img/APIs.png)
 1. Enter https://localhost:5001 as the callback URL
 1. Note the `Client ID` and `Client Secret` generated
@@ -43,11 +43,11 @@ Demo application showcasing Configuration with Design Automation for Inventor
 1. *(Optional) Specify if access should be limited in `WebApplication\appsettings.json`. Set `Enabled` to `true` or `false`, and populate the `Domains` and `Addresses` fields with comma delimited lists such as `["autodesk.com", "company.com"]` and `["person@company2.com", "person@company3.com"]`*
 1. Open the `aps-configurator-inventor.sln` file with **Visual Studio 2022** and build the solution
 ![thumbnail](/img/BuildSolution.png)\
-This will also generate the **zip** files of all the **app bundles** that the **web app** will need to upload to the **Design Automation** server\
+This will also generate the **zip** files of all the **app bundles** that the **web app** will need to upload to the **Automation Service** server\
 ![thumbnail](/img/AppBundleZips.png)\
 When building the solution, make sure that all those **app bundles** got generated successfully
 ![thumbnail](/img/SuccessfulBuild.png)\
-Now we have to initialize things both on the **Design Automation** server and locally. In the **terminal** (in **Visual Studio** or outside) navigate to the `WebApplication` folder and run `dotnet run initialize=true`
+Now we have to initialize things both on the **Automation Service** server and locally. In the **terminal** (in **Visual Studio** or outside) navigate to the `WebApplication` folder and run `dotnet run initialize=true`
 ![thumbnail](/img/DotnetRunInitialize.png)\
 Once the output reaches the `Now listening on: https://localhost:5001` line just open that **URL** in your browser\
 **Next time** you'll also be able to start the app from the **Visual Studio** debugger. 
@@ -122,7 +122,7 @@ We are using .NET 8.0 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 The project was initally created using the command `dotnet new react`
 
-### Design Automation
+### Autodesk Automation
 https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/overview/
 
 C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-design.automation
@@ -130,7 +130,7 @@ C# SDK https://github.com/Autodesk-Forge/forge-api-dotnet-design.automation
 We are using the Inventor and Revit engines.
 
 ### OSS
-Used for storing your designs. For communication with Design Automation
+Used for storing your designs. For communication with the Automation Service
 
 https://aps.autodesk.com/en/docs/data/v2/developers_guide/overview/
 
@@ -179,7 +179,7 @@ We are using npm.
 * For a simple method of deploying to Azure, see [Publish a Web app to Azure App Service using Visual Studio](https://docs.microsoft.com/en-us/visualstudio/deployment/quickstart-deploy-to-azure?view=vs-2019)
     * First change `WebApplication.Program.cs` by removing the `UseKestrel()` statement
     * You will need to change the callback in your APS app to match the URL you deploy to.
-* Example of the real-life deploy of a **Design Automation** as an [App Service](https://github.com/Autodesk-Forge/forge-configurator-inventor/wiki/AppServiceDeploy)
+* Example of the real-life deploy of an **Autodesk Automation** as an [App Service](https://github.com/Autodesk-Forge/forge-configurator-inventor/wiki/AppServiceDeploy)
 	
 ### Project file zip encoding
 * Uploading your project file can cause the error "Project name or assembly contains unsupported characters". This problem typically happens when you use non Latin characters in your project file names and the zip file does not use UTF-8 encoding for the project file names.
@@ -192,10 +192,10 @@ We are using npm.
 	* Press ok
 	* Name your resulting zip file
 	
-* For more information on this issue please refer to the [FDA troubleshooting page](https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
+* For more information on this issue please refer to the [Automation API troubleshooting page](https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/troubleshooting/)
 
 ### Use ngrok for localhost callbacks
-* If you choose webhook callback network configuration for the application, you will need a way for the callbacks to get from the FDA servers to your local machine.
+* If you choose webhook callback network configuration for the application, you will need a way for the callbacks to get from the Automation Service servers to your local machine.
 * One of the tools that can assist you with this task is ngrok https://ngrok.com/ 
 * These steps should help you to set up an ngrok tunnel to your localhost:
 	* Create a free ngrok account

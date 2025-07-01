@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Autodesk Design Automation team for Inventor
+// Written by Autodesk Inventor Automation team
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -24,7 +24,7 @@ import { CreditCost } from './creditCost';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('Show processing stats and cost', () => {
-    it('Shows the cost  and time when run FDA was invoked', () => {
+    it('Shows the cost and time when run Automation Service was invoked', () => {
         const stats = { credits: 11, processing: 2 };
         const wrapper = shallow(<CreditCost stats={stats} />);
         const texts = wrapper.find('Typography');

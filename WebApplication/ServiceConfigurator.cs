@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Autodesk Design Automation team for Inventor
+// Written by Autodesk Inventor Automation team
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -67,7 +67,7 @@ namespace WebApplication
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = 1000 * 1024 * 1024;
-                x.MultipartBodyLengthLimit = 1000 * 1024 * 1024; // default was 134217728, 1000000000 is enough due to FDA quotas (1000 MB uncompressed size)
+                x.MultipartBodyLengthLimit = 1000 * 1024 * 1024; // default was 134217728, 1000000000 is enough due to the Automation Service quotas (1000 MB uncompressed size)
             });
 
             // NOTE: eventually we might want to use `AddForgeService()`, but right now it might break existing stuff

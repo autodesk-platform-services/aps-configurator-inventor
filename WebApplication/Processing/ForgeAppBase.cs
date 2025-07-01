@@ -1,6 +1,6 @@
 ﻿/////////////////////////////////////////////////////////////////////
 // Copyright (c) Autodesk, Inc. All rights reserved
-// Written by Autodesk Design Automation team for Inventor
+// Written by Autodesk Inventor Automation team
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -200,7 +200,7 @@ namespace WebApplication.Processing
         public const string InputDocParameterName = "InventorDoc";
 
         /// <summary>
-        /// Where zip stored at DA servers.
+        /// Where is zip stored at the Automation Service servers.
         /// </summary>
         /// <remarks>NOTE: arg name is misleading, this actually is a dirname, where the zip is extracted.</remarks>
         protected const string FolderToBeZippedName = "unzippedIam";
