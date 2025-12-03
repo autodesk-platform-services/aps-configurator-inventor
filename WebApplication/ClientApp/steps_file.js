@@ -293,7 +293,7 @@ module.exports = function() {
     },
     checkReportLink()
     {
-      const workItemLink = '//div[@class="logContainer"]//a[contains(@href,"https://dasprod-store.s3.us-east-1.amazonaws.com/workItem/")]';
+      const workItemLink = '//div[@class="logContainer"]//a[contains(@href,"https://dasprod-store.s3.") and contains(@href,".amazonaws.com/workItem/")]'
       this.waitForVisible(workItemLink, 5);
       this.see('Open log file', workItemLink);
     },
