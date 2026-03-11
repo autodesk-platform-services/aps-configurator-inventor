@@ -48,6 +48,7 @@ namespace WebApplication.Processing
         public readonly string OutputModelIPT = Unique(".output.ipt");
         public readonly string OutputSAT = Unique(".sat");
         public readonly string OutputRFA = Unique(".rfa");
+        public readonly string OutputSTP = Unique(".stp");
         public readonly string BomJson = Unique(".bom.json");
         public readonly string OutputDrawing = Unique(".drawing.zip");
         public readonly string OutputDrawingPdf = Unique(".drawing.pdf");
@@ -168,6 +169,17 @@ namespace WebApplication.Processing
 
             var ossNames = project.OssNameProvider(hash);
             await bucket.RenameObjectAsync(OutputRFA, ossNames.Rfa);
+        }
+
+        /// <summary>
+        /// Move generated STP OSS file to the correct place.
+        /// </summary>
+        internal async Task MoveStpAsync(Project project, string hash)
+        {
+            var bucket = await _userResolver.GetBucketAsync();
+
+            var ossNames = project.OssNameProvider(hash);
+            await bucket.RenameObjectAsync(OutputSTP, ossNames.Stp);
         }
 
         /// <summary>

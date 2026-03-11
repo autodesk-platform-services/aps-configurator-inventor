@@ -43,6 +43,8 @@ namespace WebApplication.Definitions
         public string OutputIPTModelUrl { get; set; }
         public string SatUrl { get; internal set; }
         public string RfaUrl { get; internal set; }
+
+        public string StpUrl { get; internal set; }
         public string BomUrl { get; set; }
         public string DrawingUrl { get; set; }
         public string DrawingPdfUrl { get; set; }

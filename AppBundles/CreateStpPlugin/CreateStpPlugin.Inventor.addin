@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Addin Type="Plugin">
+  <ClassId>{506ce94e-88ba-4891-b989-d4cf85ba0ffe}</ClassId>
+  <ClientId>{506ce94e-88ba-4891-b989-d4cf85ba0ffe}</ClientId>
+  <DisplayName>CreateStpPlugin</DisplayName>
+  <Description>a CreateStpPlugin</Description>
+  <Assembly>CreateStpPlugin.dll</Assembly>
+</Addin>

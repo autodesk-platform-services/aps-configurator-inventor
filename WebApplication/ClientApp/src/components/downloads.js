@@ -119,6 +119,15 @@ export class Downloads extends Component {
                 clickHandler: async () => this.props.getDownloadLink('CreateRFAJob', project.id, project.hash, 'Preparing RFA')
             });
 
+            data.push({
+                id: 'stp',
+                icon: 'products-and-services-24.svg',
+                type: 'STP',
+                env: 'Model',
+                link: deadEndLink('STP'),
+                clickHandler: async () => this.props.getDownloadLink('CreateSTPJob', project.id, project.hash, 'Preparing STP')
+            });
+
             if (bomDownloadUrl && project.isAssembly) {
 
                 let downloadHyperlink;

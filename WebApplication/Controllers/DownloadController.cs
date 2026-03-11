@@ -60,6 +60,12 @@ namespace WebApplication.Controllers
             return RedirectToOssObject(projectName, hash, (ossNames, _)=> ossNames.Rfa);
         }
 
+        [HttpGet("{projectName}/{hash}/stp/{code?}")]
+        public Task<RedirectResult> STP(string projectName, string hash, string code = null)
+        {
+            return RedirectToOssObject(projectName, hash, (ossNames, _) => ossNames.Stp);
+        }
+
         [HttpGet("{projectName}/{hash}/bom/{code?}")]
         public async Task<ActionResult> BOM(string projectName, string hash, string code = null)
         {

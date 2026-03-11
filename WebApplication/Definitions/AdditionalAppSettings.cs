@@ -32,6 +32,7 @@ namespace WebApplication.Definitions
         public string UpdateParameters { get; set; }
         public string CreateSAT { get; set; }
         public string CreateRFA { get; set; }
+        public string CreateSTP { get; set; }
         public string CreateBOM { get; set; }
         public string ExportDrawing { get; set; }
         public string UpdateDrawings { get; set; }

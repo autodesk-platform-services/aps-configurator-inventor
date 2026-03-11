@@ -77,6 +77,7 @@ namespace WebApplication.Utilities
             public const string Adopt = "stats.adopt.json";
             public const string Update = "stats.update.json";
             public const string RFA = "stats.rfa.json";
+            public const string STP = "stats.stp.json";
             public static string DrawingPDF(int index) => $"stats.drawing_{index}.pdf.json";
             public const string Drawings = "stats.drawing.zip.json";
         }
@@ -203,6 +204,8 @@ namespace WebApplication.Utilities
 
         public string Rfa => ToFullName("result.rfa");
 
+        public string Stp => ToFullName("result.stp");
+
         /// <summary>
         /// Filename for JSON with BOM data.
         /// </summary>
@@ -223,6 +226,7 @@ namespace WebApplication.Utilities
         public string StatsAdopt => ToFullName(LocalName.Stats.Adopt);
         public string StatsUpdate => ToFullName(LocalName.Stats.Update);
         public string StatsRFA => ToFullName(LocalName.Stats.RFA);
+        public string StatsSTP => ToFullName(LocalName.Stats.STP);
         public string StatsDrawingPDF(int index) => ToFullName(LocalName.Stats.DrawingPDF(index));
         public string StatsDrawings => ToFullName(LocalName.Stats.Drawings);
     }

@@ -178,6 +178,42 @@ namespace WebApplication.Processing
             return (FdaStatsDTO.All(result.Stats), result.ReportUrl);
         }
 
+        /// <summary>
+        /// Generate STP (or take it from cache).
+        /// </summary>
+        public async Task<(FdaStatsDTO stats, string reportUrl)> GenerateStpAsync(string projectName, string hash)
+        {
+            _logger.LogInformation($"Generating STP for hash {hash}");
+
+            ProjectStorage storage = await _userResolver.GetProjectStorageAsync(projectName);
+            Project project = storage.Project;
+
+            var ossNames = project.OssNameProvider(hash);
+
+            var bucket = await _userResolver.GetBucketAsync();
+            // check if RFA file is already generated
+            if (await bucket.ObjectExistsAsync(ossNames.Rfa))
+            {
+                var stats = await bucket.DeserializeAsync<Statistics[]>(ossNames.StatsSTP);
+                return (FdaStatsDTO.CreditsOnly(stats), null);
+            }
+
+            // OK, nothing in cache - generate it now
+            var inputDocUrl = await bucket.CreateSignedUrlAsync(ossNames.GetCurrentModel(storage.IsAssembly));
+            ProcessingArgs rfaData = await _arranger.ForRfaAsync(inputDocUrl, storage.Metadata.TLA);
+
+            ProcessingResult result = await _fdaClient.GenerateRfa(rfaData);
+            if (!result.Success)
+            {
+                _logger.LogError($"{result.ErrorMessage} for project {project.Name} and hash {hash}");
+                throw new FdaProcessingException($"{result.ErrorMessage} for project {project.Name} and hash {hash}", result.ReportUrl);
+            }
+
+            await _arranger.MoveRfaAsync(project, hash);
+            await bucket.UploadAsJsonAsync(ossNames.StatsSTP, result.Stats);
+            return (FdaStatsDTO.All(result.Stats), result.ReportUrl);
+        }
+
         public async Task<(FdaStatsDTO stats, int drawingIdx, string reportUrl)> ExportDrawingPdfAsync(string projectName, string hash, string drawingKey)
         {
             _logger.LogInformation($"Getting drawing pdf for hash {hash}");

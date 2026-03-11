@@ -26,6 +26,7 @@ namespace WebApplication.Processing
     {
         private readonly TransferData _transferData;
         private readonly CreateRFA _rfaWork;
+        private readonly CreateSTP _stpWork;
         private readonly ExportDrawing _exportDrawingWork;
         private readonly UpdateDrawings _updateDrawingsWork;
         private readonly AdoptProject _adoptWork;
@@ -37,6 +38,7 @@ namespace WebApplication.Processing
         {
             _transferData = new TransferData(publisher);
             _rfaWork = new CreateRFA(publisher);
+            _stpWork = new CreateSTP(publisher);
             _exportDrawingWork = new ExportDrawing(publisher);
             _updateDrawingsWork = new UpdateDrawings(publisher);
             _adoptWork = new AdoptProject(publisher);
@@ -58,6 +60,7 @@ namespace WebApplication.Processing
 
             await _transferData.InitializeAsync(_paths.EmptyExe);
             await _rfaWork.InitializeAsync(_paths.CreateRFA);
+            await _stpWork.InitializeAsync(_paths.CreateSTP);
             await _exportDrawingWork.InitializeAsync(_paths.ExportDrawing);
             await _updateDrawingsWork.InitializeAsync(_paths.UpdateDrawings);
 
@@ -78,6 +81,7 @@ namespace WebApplication.Processing
 
             await _transferData.CleanUpAsync();
             await _rfaWork.CleanUpAsync();
+            await _stpWork.CleanUpAsync();
             await _exportDrawingWork.CleanUpAsync();
             await _updateDrawingsWork.CleanUpAsync();
 
@@ -109,6 +113,17 @@ namespace WebApplication.Processing
             }
 
             return rfaResult;
+        }
+
+        internal async Task<ProcessingResult> GenerateStp(ProcessingArgs stpData)
+        {
+            ProcessingResult stpResult = await _stpWork.ProcessAsync(stpData);
+            if (!stpResult.Success)
+            {
+                stpResult.ErrorMessage = "Failed to generate STP file";
+            }
+
+            return stpResult;
         }
 
         internal async Task<ProcessingResult> GenerateDrawing(ProcessingArgs data)
