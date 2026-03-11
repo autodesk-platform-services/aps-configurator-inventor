@@ -227,6 +227,19 @@ namespace WebApplication.Processing
             };
         }
 
+        internal async Task<ProcessingArgs> ForStpAsync(string inputDocUrl, string topLevelAssembly)
+        {
+            var bucket = await _userResolver.GetBucketAsync();
+            var stpUrl = await bucket.CreateSignedUrlAsync(OutputSTP, Access.Write);
+
+            return new ProcessingArgs
+            {
+                InputDocUrl = inputDocUrl,
+                TLA = topLevelAssembly,
+                StpUrl = stpUrl
+            };
+        }
+
         internal async Task<ProcessingArgs> ForDrawingPdfAsync(string inputDocUrl, string drawingKey, string topLevelAssembly)
         {
             var bucket = await _userResolver.GetBucketAsync();

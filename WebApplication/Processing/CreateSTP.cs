@@ -27,7 +27,7 @@ namespace WebApplication.Processing
     /// </summary>
     public class CreateSTP : ForgeAppBase
     {
-        public override string Id => nameof(CreateRFA);
+        public override string Id => nameof(CreateSTP);
         public override string Description => "Generate STP from Inventor document";
 
         protected override string OutputUrl(ProcessingArgs projectData) => projectData.StpUrl;
