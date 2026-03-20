@@ -146,6 +146,17 @@ namespace WebApplication.Controllers
             await RunJobAsync(job);
         }
 
+        public async Task CreateSTPJob(string projectId, string hash, string code)
+        {
+            _logger.LogInformation($"invoked CreateSTPJob, connectionId : {Context.ConnectionId}");
+
+            _profileProvider.Code = code;
+
+            // create job and run it
+            var job = new STPJobItem(_logger, projectId, hash, _projectWork, _linkGenerator);
+            await RunJobAsync(job);
+        }
+
         public async Task CreateDrawingDownloadJob(string projectId, string hash, string code)
         {
             _logger.LogInformation($"invoked CreateDrawingDownloadJob, connectionId : {Context.ConnectionId}");
