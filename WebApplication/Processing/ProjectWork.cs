@@ -200,16 +200,16 @@ namespace WebApplication.Processing
 
             // OK, nothing in cache - generate it now
             var inputDocUrl = await bucket.CreateSignedUrlAsync(ossNames.GetCurrentModel(storage.IsAssembly));
-            ProcessingArgs rfaData = await _arranger.ForRfaAsync(inputDocUrl, storage.Metadata.TLA);
+            ProcessingArgs stpData = await _arranger.ForStpAsync(inputDocUrl, storage.Metadata.TLA);
 
-            ProcessingResult result = await _fdaClient.GenerateRfa(rfaData);
+            ProcessingResult result = await _fdaClient.GenerateStp(stpData);
             if (!result.Success)
             {
                 _logger.LogError($"{result.ErrorMessage} for project {project.Name} and hash {hash}");
                 throw new FdaProcessingException($"{result.ErrorMessage} for project {project.Name} and hash {hash}", result.ReportUrl);
             }
 
-            await _arranger.MoveRfaAsync(project, hash);
+            await _arranger.MoveStpAsync(project, hash);
             await bucket.UploadAsJsonAsync(ossNames.StatsSTP, result.Stats);
             return (FdaStatsDTO.All(result.Stats), result.ReportUrl);
         }
