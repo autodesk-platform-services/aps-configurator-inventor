@@ -49,52 +49,18 @@ namespace CreateStpPlugin
             }
         }
 
-        BIMComponent getBIMComponent(Document doc)
-        {
-            BIMComponent bimComponent = null;
-            var docType = doc.DocumentType;
-            if (docType == DocumentTypeEnum.kAssemblyDocumentObject)
-            {
-                AssemblyDocument _doc = doc as AssemblyDocument;
-                bimComponent = _doc.ComponentDefinition.BIMComponent;
-            }
-            else if (docType == DocumentTypeEnum.kPartDocumentObject)
-            {
-                PartDocument _doc = doc as PartDocument;
-                bimComponent = _doc.ComponentDefinition.BIMComponent;
-            }
-            else
-            {
-                Trace.TraceInformation("NOT supported document type.");
-            }
-
-            return bimComponent;
-        }
-
         #region ExportSTP file 
 
         public void ExportSTP(Document doc) 
         { 
             LogTrace("Export STP file.");
 
-            BIMComponent bimComponent = getBIMComponent(doc);
-            if (bimComponent == null)
-            {
-                return;
-            }
-
             var startDir = System.IO.Directory.GetCurrentDirectory();
 
             // output file name
             var fileName = System.IO.Path.Combine(startDir, "Output.stp");
 
-            NameValueMap nvm = _inventorApplication.TransientObjects.CreateNameValueMap();
             LogTrace($"Exporting to {fileName}");
-
-            var reportFileName = System.IO.Path.Combine(startDir, "Report.html");
-
-            LogTrace($"Reporting to {reportFileName}");
-            nvm.Add("ReportFileName", reportFileName);
 
             DateTime t = DateTime.Now;
             DateTime t2;
@@ -102,7 +68,7 @@ namespace CreateStpPlugin
             {
                 try
                 {
-                    bimComponent.ExportBuildingComponentWithOptions(fileName, nvm);
+                    doc.SaveAs(fileName, true);
                     LogTrace("Export finished");
                     t2 = DateTime.Now;
                 }
@@ -121,15 +87,6 @@ namespace CreateStpPlugin
             else
             {
                 LogTrace($"ERROR: EXPORT does not exist !!!!!!!");
-            }
-
-            if (System.IO.File.Exists(reportFileName))
-            {
-                LogTrace($"REPORT generated.");
-            }
-            else
-            {
-                LogTrace($"ERROR: REPORT does not exist !!!!!!!");
             }
 
         }
