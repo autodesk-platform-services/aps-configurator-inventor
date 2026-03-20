@@ -192,7 +192,7 @@ namespace WebApplication.Processing
 
             var bucket = await _userResolver.GetBucketAsync();
             // check if RFA file is already generated
-            if (await bucket.ObjectExistsAsync(ossNames.Rfa))
+            if (await bucket.ObjectExistsAsync(ossNames.Stp))
             {
                 var stats = await bucket.DeserializeAsync<Statistics[]>(ossNames.StatsSTP);
                 return (FdaStatsDTO.CreditsOnly(stats), null);
