@@ -59,7 +59,7 @@
     "reactstrap": ">=9.0.1",
     "redux": ">=4.1.2",
     "redux-mock-store": ">=1.5.4",
-    "redux-thunk": ">=2.4.1",
+    "redux-thunk": "^3.1.0",
     "rimraf": ">=3.0.2",
     "styled-components": ">=5.3.3",
     "tar": ">=6.1.9",
