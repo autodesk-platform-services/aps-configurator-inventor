@@ -265,7 +265,7 @@ namespace WebApplication.Services
         /// <param name="token">Oxygen access token.</param>
         /// <returns>Object with User Info</returns>
         /// <remarks>
-        /// User Profile fields: https://aps.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET/#body-structure-200
+        /// User Profile fields: APS Profile v2 OIDC userinfo endpoint (GET /userinfo).
         /// </remarks>
         public async Task<UserInfo> GetProfileAsync(string token)
         {

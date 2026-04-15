@@ -115,12 +115,27 @@ namespace WebApplication.Controllers
                         return StatusCode(403);
                     }
                 }
-                return new ProfileDTO { Name = profile.Name, AvatarUrl = profile.Thumbnails["sizeX40"] };
+                return new ProfileDTO { Name = profile.Name, AvatarUrl = ResolveAvatarUrl(profile) };
             }
             else
             {
                 return AnonymousProfile;
             }
+        }
+
+        /// <summary>
+        /// Prefer Profile v2 thumbnail map (time-limited URLs); fall back to OIDC <c>picture</c> when a size entry is missing.
+        /// </summary>
+        private static string ResolveAvatarUrl(UserInfo profile)
+        {
+            if (profile.Thumbnails != null &&
+                profile.Thumbnails.TryGetValue("sizeX40", out var size40) &&
+                !string.IsNullOrEmpty(size40))
+            {
+                return size40;
+            }
+
+            return string.IsNullOrEmpty(profile.Picture) ? string.Empty : profile.Picture;
         }
     }
 }

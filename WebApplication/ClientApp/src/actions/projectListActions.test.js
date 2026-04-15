@@ -26,7 +26,7 @@ import repoInstance from '../Repository';
 const loadProjectsMock = repoInstance.loadProjects;
 
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 // mock store
 const middlewares = [thunk];
