@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Autodesk.Oss;
@@ -73,7 +74,14 @@ namespace WebApplication.State
         /// </summary>
         public async Task CreateAsync()
         {
-            await _forgeOSS.CreateBucketAsync(BucketKey);
+            try
+            {
+                await _forgeOSS.CreateBucketAsync(BucketKey);
+            }
+            catch (OssApiException e) when (e.HttpResponseMessage.StatusCode == HttpStatusCode.Conflict)
+            {
+                // Bucket already exists — safe to continue initialization.
+            }
         }
 
         /// <summary>

@@ -99,7 +99,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "start": "rimraf ./build && react-scripts start",
+    "start": "cross-env WDS_SOCKET_PORT=0 rimraf ./build && react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=./src/test/custom-test-env.js",
     "eject": "react-scripts eject",
