@@ -19,7 +19,7 @@
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import * as uiFlagsActions from './uiFlagsActions';
 
 // prepare mock for Repository module

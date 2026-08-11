@@ -30,7 +30,7 @@ import repoInstance from '../Repository';
 const uploadPackageMock = repoInstance.uploadPackage;
 
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 // mock store
 const middlewares = [thunk];
