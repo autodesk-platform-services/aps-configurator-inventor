@@ -57,7 +57,7 @@
     "react-scripts": ">=5.0.0",
     "react-select": ">=5.2.2",
     "reactstrap": ">=9.0.1",
-    "redux": ">=4.1.2",
+    "redux": ">=5.0.0",
     "redux-mock-store": ">=1.5.4",
     "redux-thunk": "^3.1.0",
     "rimraf": ">=3.0.2",
@@ -99,7 +99,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "start": "rimraf ./build && react-scripts start",
+    "start": "cross-env WDS_SOCKET_PORT=0 rimraf ./build && react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=./src/test/custom-test-env.js",
     "eject": "react-scripts eject",
