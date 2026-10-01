@@ -16,6 +16,10 @@
 * UNINTERRUPTED OR ERROR FREE.
 */
 
+.uploadPackageWindow .ui-modal__body-content {
+    overflow: hidden; /* no scrollbar */
+}
+
 #uploadPackageModal .fileBrowseContainer {
     display: flex;
 }

@@ -31,11 +31,11 @@ import TopNav, {
   ProfileAction,
   NavAction,
   Separator
-} from '@hig/top-nav';
+} from './ui/topNav';
 
 
 import styled from 'styled-components';
-import { Service24 } from "@hig/icons";
+import { Service24 } from './ui/icons';
 
 const PlaceCenterContainer = styled.div`
   align-items: center;

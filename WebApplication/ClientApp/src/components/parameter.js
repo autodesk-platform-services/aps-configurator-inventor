@@ -21,11 +21,11 @@ import {connect} from 'react-redux';
 import { editParameter } from '../actions/parametersActions';
 import { getActiveProject } from '../reducers/mainReducer';
 import './parametersContainer.css';
-import Input from '@hig/input';
-import Checkbox from '@hig/checkbox';
-import Dropdown from '@hig/dropdown';
-import Tooltip from '@hig/tooltip';
-import Spacer from "@hig/spacer";
+import Input from './ui/input';
+import Checkbox from './ui/checkbox';
+import Dropdown from './ui/dropdown';
+import Tooltip from './ui/tooltip';
+import Spacer from './ui/spacer';
 
 const paramTooltipRenderer = (parameter) => {
     const title = parameter.errormessage ? "Parameter Error" : "Parameter has changed";

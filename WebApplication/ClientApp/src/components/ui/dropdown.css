@@ -1,0 +1,109 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.ui-dropdown__field {
+    position: relative;
+}
+
+.ui-dropdown .ui-input__input {
+    cursor: pointer;
+    padding-right: 36px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ui-dropdown__caret {
+    pointer-events: none;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s;
+}
+
+.ui-dropdown__caret,
+.ui-dropdown__caret > * {
+    fill: rgba(102, 102, 102, 0.7);
+}
+
+.ui-dropdown__caret--open {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.ui-dropdown__caret--open,
+.ui-dropdown__caret--open > * {
+    fill: var(--ui-accent);
+}
+
+.ui-dropdown__menu {
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    max-height: 360px;
+    overflow: auto;
+    position: absolute;
+    top: 36px;
+    width: 100%;
+    z-index: 9996;
+}
+
+.ui-dropdown__option {
+    align-items: center;
+    box-sizing: border-box;
+    color: var(--ui-text);
+    cursor: pointer;
+    display: flex;
+    font-family: var(--ui-font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.428571429;
+    min-height: 18px;
+    padding: 8px 12px;
+    transition: background-color var(--ui-transition);
+}
+
+.ui-dropdown__option--highlighted {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.ui-dropdown__option:active {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* the tick is drawn before the label, and only for the selected option */
+.ui-dropdown__check {
+    align-items: center;
+    display: flex;
+    height: 18px;
+    margin-right: 12px;
+    order: -1;
+}
+
+.ui-dropdown__check svg * {
+    opacity: 0;
+}
+
+.ui-dropdown__option[aria-selected="true"] .ui-dropdown__check svg * {
+    fill: var(--ui-accent);
+    opacity: 1;
+}

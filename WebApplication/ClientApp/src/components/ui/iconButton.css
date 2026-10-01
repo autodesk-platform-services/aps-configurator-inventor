@@ -1,0 +1,56 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-icon-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    outline: 0;
+    padding: 0;
+    position: relative;
+    transition: box-shadow var(--ui-transition);
+    width: 36px;
+}
+
+.ui-icon-button svg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.ui-icon-button svg * {
+    fill: var(--ui-icon);
+    transition: fill var(--ui-transition);
+}
+
+.ui-icon-button:hover svg * {
+    fill: var(--ui-text);
+}
+
+.ui-icon-button:focus-visible {
+    box-shadow: var(--ui-focus-halo);
+}

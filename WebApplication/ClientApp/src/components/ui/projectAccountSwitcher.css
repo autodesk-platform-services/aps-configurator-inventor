@@ -1,0 +1,110 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-project-switcher__anchor {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+}
+
+.ui-project-switcher__current {
+    align-items: center;
+    display: flex;
+    height: 34px;
+    margin: 0;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.ui-project-switcher__current-label,
+.ui-project-switcher__label {
+    font-family: var(--ui-font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.428571429;
+    margin: 0;
+}
+
+.ui-project-switcher__current-label {
+    color: var(--ui-text);
+}
+
+.ui-project-switcher__caret {
+    margin: 0 12px;
+}
+
+/* the image covers the initial */
+.ui-project-switcher__thumbnail {
+    border: 1px solid #bec8d2;
+    border-radius: 2px;
+    color: #485366;
+    display: inline-block;
+    flex: 0 0 auto;
+    font-family: var(--ui-font);
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    margin-right: 10px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: 32px;
+}
+
+.ui-project-switcher__image {
+    border: none;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+.ui-project-switcher__panel {
+    padding: 0 10px 10px 10px;
+    white-space: nowrap;
+}
+
+.ui-project-switcher__list {
+    list-style: none;
+    margin: 0 0 10px 0;
+    padding: 10px 0 0 0;
+}
+
+.ui-project-switcher__title {
+    color: var(--ui-text);
+    display: block;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    line-height: 1.428571429;
+    text-transform: uppercase;
+}
+
+.ui-project-switcher__item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 34px;
+    margin: 0;
+    padding-top: 8px;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.ui-project-switcher__label {
+    color: #006eaf;
+}

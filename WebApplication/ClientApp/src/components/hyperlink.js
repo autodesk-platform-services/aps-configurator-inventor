@@ -17,7 +17,7 @@
 /////////////////////////////////////////////////////////////////////
 
 import React, { Component } from 'react';
-import Typography from "@hig/typography";
+import Typography from './ui/typography';
 
 export class HyperLink extends Component {
 

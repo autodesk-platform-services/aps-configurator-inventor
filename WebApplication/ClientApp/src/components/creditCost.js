@@ -18,10 +18,10 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Spacer from "@hig/spacer";
-import Typography from "@hig/typography";
+import Spacer from './ui/spacer';
+import Typography from './ui/typography';
 import { getStats } from '../reducers/mainReducer';
-import { Cloud16 } from '@hig/icons';
+import { Cloud16 } from './ui/icons';
 import { significantDigits } from '../utils/conversion';
 
 export class CreditCost extends Component {

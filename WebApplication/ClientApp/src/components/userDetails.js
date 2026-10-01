@@ -17,9 +17,9 @@
 /////////////////////////////////////////////////////////////////////
 
 import React, { Component } from 'react';
-import Avatar from '@hig/avatar';
+import Avatar from './ui/avatar';
 import "./userDetails.css";
-import Button from '@hig/button';
+import Button from './ui/button';
 
 export class UserDetails extends Component {
     constructor(props) {

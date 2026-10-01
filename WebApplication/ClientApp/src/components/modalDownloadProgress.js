@@ -17,12 +17,11 @@
 /////////////////////////////////////////////////////////////////////
 
 import React, { Component } from 'react';
-import Modal from '@hig/modal';
-import ProgressBar from '@hig/progress-bar';
-import Typography from "@hig/typography";
+import Modal from './ui/modal';
+import ProgressBar from './ui/progressBar';
+import Typography from './ui/typography';
 import './modalProgress.css';
-import merge from "lodash.merge";
-import Button from '@hig/button';
+import Button from './ui/button';
 import HyperLink from './hyperlink';
 import CreditCost from './creditCost';
 import ReportUrl from './reportUrl';
@@ -30,16 +29,6 @@ import ReportUrl from './reportUrl';
 export class ModalDownloadProgress extends Component {
 
     render() {
-        const modalStyles = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: {
-                window: { // by design
-                    width: "371px",
-                    height: "auto"
-                }
-            }
-        });
-
         const done = this.props.url != null;
         const iconAsBackgroundImage = {
             width: '48px',
@@ -52,8 +41,7 @@ export class ModalDownloadProgress extends Component {
               open={this.props.open}
               title={this.props.title}
               onCloseClick={this.props.onClose}
-              percentComplete={null}
-              stylesheet={modalStyles}>
+              style={{ width: "371px", height: "auto" /* by design */ }}>
               <div className="modalContent">
                   <div style={iconAsBackgroundImage}/>
                   <div className="modalAction" fontWeight="bold">

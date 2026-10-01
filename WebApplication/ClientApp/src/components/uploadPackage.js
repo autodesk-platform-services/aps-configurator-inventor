@@ -18,14 +18,13 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@hig/modal';
-import Label from '@hig/label';
-import Input from '@hig/input';
-import Button from '@hig/button';
-import IconButton from '@hig/icon-button';
-import Spacer from '@hig/spacer';
-import { Folder24 } from '@hig/icons';
-import merge from "lodash.merge";
+import Modal from './ui/modal';
+import Label from './ui/label';
+import Input from './ui/input';
+import Button from './ui/button';
+import IconButton from './ui/iconButton';
+import Spacer from './ui/spacer';
+import { Folder24 } from './ui/icons';
 import { uploadPackageDlgVisible, uploadPackageData, projectAlreadyExists } from '../reducers/mainReducer';
 import { showUploadPackage, editPackageFile, editPackageRoot, setProjectAlreadyExists } from '../actions/uiFlagsActions';
 import { uploadPackage } from '../actions/uploadPackageActions.js';
@@ -93,27 +92,6 @@ export class UploadPackage extends Component {
     render() {
 
         const height = this.shouldShowTopLevelAssembly() ? 327 : 280;
-        const modalStyles = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: {
-                window: { // by design
-                    width: "370px",
-                    height: `${height}px`
-                },
-                bodyContent: {
-                    overflow: "hidden" // no scrollbar
-                }
-            }
-        });
-        const modalStylesConflict = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: {
-                window: { // by design
-                    width: "370px",
-                    height: "180px"
-                }
-            }
-        });
 
         const greyBorderColor = 'rgba(128,128,128,0.2)';
         const selectedBlueColor = '#0696d7';
@@ -172,7 +150,8 @@ export class UploadPackage extends Component {
             open={this.props.uploadPackageDlgVisible}
             title="Upload package"
             onCloseClick={() => { this.props.showUploadPackage(false); }}
-            stylesheet={modalStyles} >
+            className="uploadPackageWindow"
+            style={{ width: "370px", height: `${height}px` /* by design */ }} >
                 <div id="uploadPackageModal">
                     <div className="fileBrowseContainer">
                         <div className="stretch">
@@ -255,7 +234,7 @@ export class UploadPackage extends Component {
             open={true}
             title="Warning"
             onCloseClick={() => { this.props.setProjectAlreadyExists(false); }}
-            stylesheet={modalStylesConflict} >Project already exists, please choose a different file to upload or rename it.</Modal>
+            style={{ width: "370px", height: "180px" /* by design */ }} >Project already exists, please choose a different file to upload or rename it.</Modal>
             }
             </React.Fragment>
         );

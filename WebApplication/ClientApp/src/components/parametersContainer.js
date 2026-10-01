@@ -23,9 +23,9 @@ import Parameter from './parameter';
 import { getActiveProject, getParameters, getUpdateParameters, modalProgressShowing, updateFailedShowing, errorData } from '../reducers/mainReducer';
 import { fetchParameters, resetParameters, updateModelWithParameters } from '../actions/parametersActions';
 import { showModalProgress, showUpdateFailed, invalidateDrawing } from '../actions/uiFlagsActions';
-import Button from '@hig/button';
-import Tooltip from '@hig/tooltip';
-import { Alert24 } from "@hig/icons";
+import Button from './ui/button';
+import Tooltip from './ui/tooltip';
+import { Alert24 } from './ui/icons';
 
 import ModalProgress from './modalProgress';
 import ModalFail from './modalFail';

@@ -18,7 +18,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Surface from '@hig/surface';
+import Surface from './components/ui/surface';
 import './app.css';
 import Toolbar from './components/toolbar';
 import TabsContainer from './components/tabsContainer';

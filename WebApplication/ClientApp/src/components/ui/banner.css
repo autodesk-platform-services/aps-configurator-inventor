@@ -1,0 +1,81 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-banner {
+    /* translucent blue over white */
+    background: linear-gradient(rgba(6, 150, 215, 0.2), rgba(6, 150, 215, 0.2)) #ffffff;
+    border-color: #9bd5ef;
+    border-style: solid;
+    border-width: 1px 0;
+    box-sizing: border-box;
+    display: flex;
+    min-height: 50px;
+}
+
+.ui-banner__icon {
+    align-items: center;
+    background-color: var(--ui-accent);
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    margin: 0;
+    min-height: 50px;
+    width: 50px;
+}
+
+.ui-banner__icon svg * {
+    fill: #ffffff;
+}
+
+.ui-banner__content {
+    align-items: center;
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: space-between;
+    margin: 15px 0 0 16px;
+    overflow: hidden;
+}
+
+.ui-banner__message {
+    margin: 0 auto 0 0;
+    max-width: 900px;
+    min-width: 200px;
+    padding-bottom: 15px;
+    text-align: left;
+}
+
+.ui-banner__actions {
+    flex-shrink: 0;
+    padding-bottom: 14px;
+    padding-right: 24px;
+}
+
+.ui-banner__dismiss {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    padding-right: 37px;
+}
+
+.ui-banner__dismiss svg * {
+    fill: var(--ui-icon);
+}
+
+.ui-banner__dismiss:hover svg * {
+    fill: var(--ui-accent);
+}

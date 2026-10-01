@@ -1,0 +1,49 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-progress-bar {
+    position: relative;
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    width: 100%;
+    height: 4px;
+}
+
+/* A 200px streak at the right edge of a full-width strip, which slides across the bar. */
+.ui-progress-bar__fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    animation: ui-progress-bar-slide 2s linear infinite;
+}
+
+.ui-progress-bar__fill::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 200px;
+    height: 4px;
+    background-image: linear-gradient(135deg, transparent, #38abdf 100%);
+}
+
+@keyframes ui-progress-bar-slide {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(200px); }
+}

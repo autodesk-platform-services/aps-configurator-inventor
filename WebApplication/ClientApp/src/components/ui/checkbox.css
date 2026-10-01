@@ -1,0 +1,85 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-checkbox {
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    height: 16px;
+    width: 16px;
+}
+
+/* the real input sits invisibly on top of the drawn box and takes the clicks */
+.ui-checkbox__input {
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+}
+
+.ui-checkbox__box {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    height: 16px;
+    width: 16px;
+    border: 1px solid var(--ui-border);
+    background-color: transparent;
+    transition: box-shadow var(--ui-transition), border var(--ui-transition);
+}
+
+.ui-checkbox__box--checked {
+    border: none;
+    background-color: var(--ui-icon);
+}
+
+.ui-checkbox__box svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.ui-checkbox__box svg * {
+    fill: #ffffff;
+}
+
+.ui-checkbox__input:hover + .ui-checkbox__box {
+    box-shadow: var(--ui-hover-halo);
+}
+
+.ui-checkbox__input:focus-visible + .ui-checkbox__box {
+    border-color: var(--ui-accent);
+    box-shadow: var(--ui-focus-halo);
+}
+
+.ui-checkbox__input:disabled {
+    cursor: default;
+}
+
+.ui-checkbox__input:disabled + .ui-checkbox__box {
+    box-shadow: none;
+    opacity: 0.4;
+}

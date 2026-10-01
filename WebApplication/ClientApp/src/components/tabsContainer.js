@@ -18,7 +18,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Tabs, { Tab } from "@hig/tabs";
+import Tabs, { Tab } from './ui/tabs';
 import ProjectList from './projectList';
 import ForgeView from './forgeView';
 import ParametersContainer from './parametersContainer';
