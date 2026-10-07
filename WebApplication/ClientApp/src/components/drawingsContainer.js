@@ -19,7 +19,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './drawingsContainer.css';
-import Button from '@hig/button';
+import Button from './ui/button';
 import { getActiveProject, getDrawingsList, getActiveDrawing, downloadProgressShowing, downloadProgressTitle, downloadUrl, downloadFailedShowing, errorData } from '../reducers/mainReducer';
 import { getDownloadLink } from '../actions/downloadActions';
 import { showDownloadProgress, showDownloadFailed } from '../actions/uiFlagsActions';

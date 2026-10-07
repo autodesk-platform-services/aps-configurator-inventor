@@ -18,10 +18,9 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from '@hig/modal';
-import Button from '@hig/button';
-import Spacer from '@hig/spacer';
-import merge from "lodash.merge";
+import Modal from './ui/modal';
+import Button from './ui/button';
+import Spacer from './ui/spacer';
 import { deleteProjectDlgVisible, checkedProjects } from '../reducers/mainReducer';
 import { showDeleteProject } from '../actions/uiFlagsActions';
 import { deleteProject } from '../actions/deleteProjectActions';
@@ -30,22 +29,13 @@ import './deleteProject.css';
 export class DeleteProject extends Component {
 
     render() {
-        const modalStyles = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: {
-                window: { // by design
-                    width: "370px"
-                }
-            }
-        });
-
         return (
             <React.Fragment>
             <Modal
             open={this.props.deleteProjectDlgVisible}
             title="Delete project"
             onCloseClick={() => { this.props.showDeleteProject(false); }}
-            stylesheet={modalStyles} >
+            style={{ width: "370px" /* by design */ }} >
                 <div id="deleteProjectModal">
                     <div className="deleteProjectListContainer">
                         Are you sure you want to delete the following {this.props.checkedProjects.length === 1 ? 'project' : 'projects'}?

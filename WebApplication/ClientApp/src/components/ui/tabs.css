@@ -1,0 +1,114 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-tabs {
+    display: flex;
+    flex-direction: column;
+}
+
+.ui-tabs__list {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ui-tabs__list--center {
+    justify-content: center;
+}
+
+.ui-tabs__item {
+    display: flex;
+    margin: 0 24px 0 0;
+    position: relative;
+}
+
+.ui-tabs__item:last-of-type {
+    margin-right: 0;
+}
+
+.ui-tabs__tab {
+    cursor: pointer;
+    display: flex;
+    margin-bottom: -1px;
+    outline: none;
+    padding: 0 0 4px 0;
+    position: relative;
+    user-select: none;
+}
+
+/* underline: grey on hover, blue when active */
+.ui-tabs__tab::after {
+    background-color: rgba(128, 128, 128, 0.85);
+    bottom: 0;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    transition: height var(--ui-transition);
+    width: 100%;
+}
+
+.ui-tabs__tab:hover::after,
+.ui-tabs__tab--active::after {
+    height: 2px;
+}
+
+.ui-tabs__tab--active::after {
+    background-color: var(--ui-accent);
+}
+
+.ui-tabs__tab--active:hover::after {
+    box-shadow: 0 2px 0 rgba(6, 150, 215, 0.5);
+}
+
+.ui-tabs__tab:focus-visible {
+    box-shadow: var(--ui-focus-halo);
+}
+
+.ui-tabs__label {
+    color: var(--ui-text);
+    display: inline-block;
+    font-family: var(--ui-font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.428571429;
+    margin: 0;
+    text-align: center;
+}
+
+.ui-tabs__tab--active .ui-tabs__label {
+    font-weight: 700;
+}
+
+/* reserve the bold width, so the tab bar doesn't shift when the active tab changes */
+.ui-tabs__label::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.ui-tabs__content {
+    flex: 1 1 auto;
+}

@@ -1,0 +1,84 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+/* the dialog element is the dimmed full-screen overlay; the window sits inside it */
+.ui-modal {
+    background-color: rgba(0, 0, 0, 0.5);
+    bottom: 0;
+    color: var(--ui-text);
+    left: 0;
+    outline: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 10001;
+}
+
+.ui-modal__window {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    left: 50%;
+    outline: none;
+    position: fixed;
+    top: 128px;
+    transform: translateX(-50%);
+    width: 400px;
+    z-index: 1001;
+}
+
+.ui-modal__header {
+    border-bottom: 1px solid rgba(60, 60, 60, 0.25);
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 1.66666;
+    min-height: 60px;
+    z-index: 1002;
+}
+
+.ui-modal__header-content {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 24px;
+}
+
+.ui-modal__header-content svg * {
+    fill: var(--ui-text);
+}
+
+.ui-modal__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 152px;
+    overflow: hidden;
+    position: relative;
+}
+
+.ui-modal__body-content {
+    border: none;
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 24px;
+}

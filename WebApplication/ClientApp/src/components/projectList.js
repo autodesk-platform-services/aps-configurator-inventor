@@ -19,8 +19,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import 'react-base-table/styles.css';
-import IconButton from '@hig/icon-button';
-import { Upload24, Trash24 } from '@hig/icons';
+import IconButton from './ui/iconButton';
+import { Upload24, Trash24 } from './ui/icons';
 import './projectList.css';
 import { showUploadPackage, updateActiveTabIndex, showDeleteProject, showModalProgress, invalidateDrawing } from '../actions/uiFlagsActions';
 import { setUploadProgressHidden, hideUploadFailed } from '../actions/uploadPackageActions';

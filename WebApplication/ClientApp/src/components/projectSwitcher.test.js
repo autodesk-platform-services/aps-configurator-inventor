@@ -45,13 +45,6 @@ const baseProps = {
   fetchProjects: () => {}
 };
 
-const clickEventTarget = {
-  target: {
-    lastChild: {
-      textContent: "Wheel"
-    }
-  }
-};
 
 describe('components', () => {
   describe('Project switcher', () => {
@@ -81,7 +74,7 @@ describe('components', () => {
 
       const wrapper = shallow(<ProjectSwitcher {...props} />);
       const projectSwitcher = wrapper.find('ProjectAccountSwitcher');
-      projectSwitcher.simulate('click', clickEventTarget);
+      projectSwitcher.simulate('select', 'Wheel');
 
       expect(updateActiveProject).toHaveBeenLastCalledWith("Wheel");
     });
@@ -104,7 +97,7 @@ describe('components', () => {
 
       const wrapper = shallow(<ProjectSwitcher {...props} />);
       const projectSwitcher = wrapper.find('ProjectAccountSwitcher');
-      projectSwitcher.simulate('click', clickEventTarget);
+      projectSwitcher.simulate('select', 'Wheel');
 
       expect(updateActiveTabIndex).toHaveBeenCalledWith(1); // model tab index
     });

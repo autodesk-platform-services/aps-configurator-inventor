@@ -18,7 +18,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Checkbox from '@hig/checkbox';
+import Checkbox from './ui/checkbox';
 import { checkedProjects } from '../reducers/mainReducer';
 
 export class CheckboxTableHeader extends Component {

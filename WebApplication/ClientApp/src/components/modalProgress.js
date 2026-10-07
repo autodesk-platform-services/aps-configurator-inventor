@@ -19,14 +19,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Modal from '@hig/modal';
-import ProgressBar from '@hig/progress-bar';
-import Typography from "@hig/typography";
-import Spacer from "@hig/spacer";
+import Modal from './ui/modal';
+import ProgressBar from './ui/progressBar';
+import Typography from './ui/typography';
+import Spacer from './ui/spacer';
 import './modalProgress.css';
-import merge from "lodash.merge";
 import CreditCost from './creditCost';
-import Button from '@hig/button';
+import Button from './ui/button';
 import ReportUrl from './reportUrl';
 import { getStats } from '../reducers/mainReducer';
 
@@ -53,33 +52,23 @@ export class ModalProgress extends Component {
         const withWarnings = this.props.warningMsg?.length > 0;
         const title = done && this.props.doneTitle ? this.props.doneTitle : this.props.title;
 
-        const modalProps = (done && withWarnings) ? {
-            window: { // by design
-                width: "371px",
-                height: "auto",
-                borderLeftWidth: "3px",
-                borderLeftStyle: "solid",
-                borderLeftColor: "rgb(250, 162, 27)" // warningColor
-            }
+        const modalStyle = (done && withWarnings) ? { // by design
+            width: "371px",
+            height: "auto",
+            borderLeftWidth: "3px",
+            borderLeftStyle: "solid",
+            borderLeftColor: "rgb(250, 162, 27)" // warningColor
         } : {
-            window: { // by design
-                width: "371px",
-                height: "auto"
-            }
+            width: "371px",
+            height: "auto"
         };
-
-        const modalStyles = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: modalProps
-        });
 
         return (
             <Modal
             open={this.props.open}
             title={title}
             onCloseClick={this.props.onClose}
-            percentComplete={null}
-            stylesheet={modalStyles}
+            style={modalStyle}
             headerChildren={
                 <header id="customHeader">
                     <div className="customHeaderContent">

@@ -1,0 +1,114 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-top-nav {
+    align-items: stretch;
+    background: #ffffff;
+    box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    display: flex;
+    font-family: var(--ui-font);
+    height: 56px;
+    justify-content: space-between;
+    line-height: 1.6;
+    min-height: 56px;
+    padding-left: 7px;
+    position: relative;
+    z-index: 9998;
+}
+
+.ui-top-nav__spacer {
+    flex: 1 1 0;
+}
+
+.ui-top-nav__logo {
+    align-items: center;
+    display: flex;
+    line-height: 0;
+    padding: 0 12px 0 5px;
+}
+
+.ui-top-nav__logo-link {
+    cursor: pointer;
+    display: flex;
+    text-decoration: none;
+}
+
+.ui-top-nav__interactions {
+    align-items: center;
+    display: flex;
+    padding: 0 6px;
+}
+
+.ui-top-nav__profile {
+    align-items: center;
+    display: flex;
+}
+
+.ui-top-nav__action {
+    align-items: center;
+    display: flex;
+    height: 56px;
+}
+
+.ui-top-nav__action--profile {
+    padding: 0 6px;
+}
+
+/* like HIG, the action panels hang from the bar (not the icon), 6px from the window edge */
+.ui-top-nav__action .ui-flyout {
+    position: static;
+}
+
+.ui-top-nav__action .ui-flyout__panel {
+    min-width: 0;
+    right: 6px;
+    top: calc(100% + 10px);
+}
+
+.ui-top-nav__separator {
+    border-left: 1px solid rgba(60, 60, 60, 0.25);
+    height: 32px;
+    margin: 12px 6px;
+    width: 0;
+}
+
+.ui-top-nav__profile-button {
+    align-items: center;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    width: 32px;
+}
+
+.ui-top-nav__profile-button:focus-visible {
+    border-radius: 50%;
+    box-shadow: var(--ui-focus-halo);
+}
+
+.ui-top-nav__panel {
+    max-height: 360px;
+    overflow-y: auto;
+    width: 276px;
+}

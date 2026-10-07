@@ -1,0 +1,15 @@
+The components in this folder are an in-app replacement for Autodesk HIG
+(https://github.com/Autodesk/hig), modelled on its markup and look.
+
+Parts are derived from HIG, which is licensed under the Apache License, Version 2.0
+(http://www.apache.org/licenses/LICENSE-2.0):
+
+- icons.js: SVG paths from @hig/icons 4.1.0
+- fonts.css: @font-face rules from @hig/fonts 1.1.0
+- tokens.css and the component .css files: colour, size and spacing values from
+  @hig/theme-data 2.23.0 (lightGrayMediumDensityTheme) and the HIG component styles
+- avatar.js: the avatar colour palette and the name-to-colour/initials rules from @hig/avatar 2.1.0
+
+Copyright (c) Autodesk, Inc.
+Changes: rewritten as plain React components with static CSS; only the props and
+variants used by this application are implemented.

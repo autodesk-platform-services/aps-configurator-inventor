@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import 'react-base-table/styles.css';
 import './bom.css';
 
-import { Alert24 } from "@hig/icons";
+import { Alert24 } from './ui/icons';
 
 import { getActiveProject, getBom } from '../reducers/mainReducer';
 import { fetchBom } from '../actions/bomActions';

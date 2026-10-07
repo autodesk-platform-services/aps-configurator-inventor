@@ -1,0 +1,70 @@
+/*
+* Copyright (c) Autodesk, Inc. All rights reserved
+* Written by Autodesk Inventor Automation team
+*
+* Permission to use, copy, modify, and distribute this software in
+* object code form for any purpose and without fee is hereby granted,
+* provided that the above copyright notice appears in all copies and
+* that both that copyright notice and the limited warranty and
+* restricted rights notice below appear in all supporting
+* documentation.
+*
+* AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+* AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+* MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+* DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+* UNINTERRUPTED OR ERROR FREE.
+*/
+
+.ui-tooltip {
+    display: inline-block;
+    position: relative;
+}
+
+.ui-tooltip__action {
+    display: flex;
+}
+
+/* `display: table` lets the bubble grow wider than the anchor when the content needs it */
+.ui-tooltip__flyout {
+    color: #ffffff;
+    display: table;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+    width: 100%;
+    z-index: 9999;
+}
+
+.ui-tooltip__flyout--top-center {
+    top: calc(100% + 6px);
+}
+
+.ui-tooltip__flyout--bottom-center {
+    bottom: calc(100% + 6px);
+}
+
+.ui-tooltip__panel {
+    background-color: var(--ui-tooltip);
+    border: 1px solid var(--ui-tooltip);
+    border-radius: 2px;
+}
+
+.ui-tooltip__pointer {
+    border: 6px solid transparent;
+    height: 0;
+    left: 50%;
+    margin-left: -6px;
+    position: absolute;
+    width: 0;
+}
+
+.ui-tooltip__flyout--top-center .ui-tooltip__pointer {
+    border-bottom-color: var(--ui-tooltip);
+    bottom: 100%;
+}
+
+.ui-tooltip__flyout--bottom-center .ui-tooltip__pointer {
+    border-top-color: var(--ui-tooltip);
+    top: 100%;
+}

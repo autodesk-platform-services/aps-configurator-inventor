@@ -17,15 +17,14 @@
 /////////////////////////////////////////////////////////////////////
 
 import React, { Component } from 'react';
-import Modal from '@hig/modal';
-import { CloseMUI, Complete24 } from "@hig/icons";
-import ProgressBar from '@hig/progress-bar';
-import Spacer from "@hig/spacer";
-import Typography from "@hig/typography";
+import Modal from './ui/modal';
+import { CloseMUI, Complete24 } from './ui/icons';
+import ProgressBar from './ui/progressBar';
+import Spacer from './ui/spacer';
+import Typography from './ui/typography';
 import './modalProgress.css';
-import merge from "lodash.merge";
-import Button from '@hig/button';
-import IconButton from "@hig/icon-button";
+import Button from './ui/button';
+import IconButton from './ui/iconButton';
 import CreditCost from './creditCost';
 import ReportUrl from './reportUrl';
 
@@ -37,18 +36,13 @@ export class ModalProgressUpload extends Component {
         const doneColor = "rgb(135, 179, 64)";
         const warningColor = "rgb(250, 162, 27)";
 
-        const modalStyles = /* istanbul ignore next */ styles =>
-        merge(styles, {
-          modal: {
-                window: { // by design
-                    width: "371px",
-                    height: "auto",
-                    borderLeftWidth: "3px",
-                    borderLeftStyle: "solid",
-                    borderLeftColor: done ? withWarnings ? warningColor : doneColor : "rgb(255, 255, 255)"
-                }
-            }
-        });
+        const modalStyle = { // by design
+            width: "371px",
+            height: "auto",
+            borderLeftWidth: "3px",
+            borderLeftStyle: "solid",
+            borderLeftColor: done ? withWarnings ? warningColor : doneColor : "rgb(255, 255, 255)"
+        };
 
         const iconAsBackgroundImage = {
             width: '48px',
@@ -70,8 +64,7 @@ export class ModalProgressUpload extends Component {
               open={this.props.open}
               title={this.props.title}
               onCloseClick={this.props.onClose}
-              percentComplete={null}
-              stylesheet={modalStyles}
+              style={modalStyle}
               headerChildren={
                 <header id="customHeader">
                     <div className="customHeaderContent">

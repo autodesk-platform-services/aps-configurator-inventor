@@ -26,3 +26,19 @@
     margin-top: auto;
     padding-left: 24px;
 }
+
+.bannerActions {
+    display: flex;
+}
+
+.bannerAction {
+    align-items: center;
+    display: flex;
+    padding: 4px 0;
+}
+
+.dontshowtext {
+    font-family: ArtifaktElement, sans-serif;
+    font-size: 14px;
+    margin-left: 12px;
+}

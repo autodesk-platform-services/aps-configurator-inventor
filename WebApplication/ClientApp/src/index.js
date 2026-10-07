@@ -26,7 +26,8 @@ import { thunk } from 'redux-thunk';
 
 import {mainReducer} from './reducers/mainReducer';
 
-import "@hig/fonts/build/ArtifaktElement.css";
+import "./components/ui/fonts.css";
+import "./components/ui/tokens.css";
 
 /* eslint-disable no-undef */
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);

@@ -18,37 +18,30 @@
 
 import React, { Component } from 'react';
 
-import Modal from '@hig/modal';
-import { CloseMUI, Error24 } from "@hig/icons";
-import Typography from "@hig/typography";
+import Modal from './ui/modal';
+import { CloseMUI, Error24 } from './ui/icons';
+import Typography from './ui/typography';
 import './modalUpdateFailed.css';
-import merge from "lodash.merge";
 import HyperLink from './hyperlink';
-import Button from '@hig/button';
-import IconButton from "@hig/icon-button";
+import Button from './ui/button';
+import IconButton from './ui/iconButton';
 
 export class ModalUpdateFailed extends Component {
 
     render() {
-        const modalStyles = /* istanbul ignore next */ styles =>
-            merge(styles, {
-                modal: {
-                    window: { // by design
-                        width: "371px",
-                        height: "263px",
-                        borderLeftStyle: "solid",
-                        borderLeftWidth: "thick",
-                        borderLeftColor: "#ec4a41" // by design
-                    }
-                }
-            });
+        const modalStyle = { // by design
+            width: "371px",
+            height: "263px",
+            borderLeftStyle: "solid",
+            borderLeftWidth: "thick",
+            borderLeftColor: "#ec4a41"
+        };
         return (
             <Modal
                 open={this.props.open}
                 title={this.props.title}
                 onCloseClick={this.props.onClose}
-                percentComplete={null}
-                stylesheet={modalStyles}
+                style={modalStyle}
                 headerChildren={
                     <header id="customHeader">
                         <div className="customHeaderContent">

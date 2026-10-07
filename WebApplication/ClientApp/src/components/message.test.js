@@ -20,7 +20,7 @@ import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Message } from './message';
-import Checkbox from '@hig/checkbox';
+import Checkbox from './ui/checkbox';
 
 Enzyme.configure({ adapter: new Adapter() });
 
