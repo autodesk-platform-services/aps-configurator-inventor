@@ -16,7 +16,7 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 import repo from './Repository';
 
 class JobManager {
