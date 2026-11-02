@@ -16,7 +16,7 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 
 const connectionMock = {
     onHandlers: {},
@@ -37,17 +37,12 @@ const connectionMock = {
     }
 };
 
-function hubConnectionBuilder() {}
-
-hubConnectionBuilder.prototype.withUrl = function(/*url*/) {
+signalR.HubConnectionBuilder.prototype.withUrl = function(/*url*/) {
     return {
         configureLogging: function(/*trace*/) {
             return { build: function() { return connectionMock; }};
         }
     };
 };
-
-// eslint-disable-next-line no-import-assign
-signalR.HubConnectionBuilder = hubConnectionBuilder;
 
 export default connectionMock;
